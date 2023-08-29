@@ -20,7 +20,7 @@ Stage::~Stage()
 //初期化
 void Stage::Initialize()
 {
-    string modelname[modelNum] = { "Default","Grass","Sand","Brick","Water" };
+    string modelname[modelNum] = { "Default","Brick","Grass","Sand","Water" };
     //モデルデータのロード
     for (int i = 0; i < modelNum; i++)
     {
