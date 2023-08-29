@@ -1,9 +1,14 @@
 #pragma once
 #include "Engine/GameObject.h"
-
+namespace {
+    const int modelNum = 5;
+    const int XSIZE{ 15 };
+    const int ZSIZE{ 15 };
+}
 class Stage : public GameObject
 {
-    int hModel_;    //モデル番号 
+    int hModel_[modelNum];    //モデル番号 
+    int table_[XSIZE][ZSIZE];
 public:
     //コンストラクタ
     Stage(GameObject* parent);

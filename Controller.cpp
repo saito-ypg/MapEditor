@@ -6,6 +6,7 @@ namespace { const int ROTATESPD = 2.5f; }
 Controller::Controller(GameObject* parent)
     :GameObject(parent, "Controller")
 {
+    transform_.rotate_.x = 45;
 }
 
 //デストラクタ
@@ -89,30 +90,30 @@ void Controller::Update()
     if (Input::IsKey(DIK_UP))
     {
         transform_.rotate_.x += rotSpd;
-        if (transform_.rotate_.x > 45)
-            transform_.rotate_.x = 44.9999;
+        if (transform_.rotate_.x >=90)
+            transform_.rotate_.x =89.9999f;
+
     }
 
     //した回転
     if (Input::IsKey(DIK_DOWN))
     {
         transform_.rotate_.x -= rotSpd;
-        if (transform_.rotate_.x <-45)
-            transform_.rotate_.x = -45;
+        if (transform_.rotate_.x <0)
+            transform_.rotate_.x = 0;
     }
+    
     //transform_.rotate_.yの値に合わせてＹ軸回転させる行列
     XMMATRIX mRotateY = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
     //transform_.rotate_.xの値に合わせてX軸回転させる行列
     XMMATRIX mRotateX = XMMatrixRotationX(XMConvertToRadians(transform_.rotate_.x));
-    XMMATRIX mRotate = mRotateX * mRotateY;
+    XMMATRIX mRotate = mRotateX * mRotateY;//カメラ用回転行列
     //現在位置をベクトルにしておく
     XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
 
     //前後移動ベクトル
     XMVECTOR frontMove = XMVectorSet(0, 0, mvSpd ,0);            //奥向きのXMVECTOR構造体を用意し
-    frontMove = XMVector3TransformCoord(frontMove, mRotateY);    //移動ベクトル
-
-
+    frontMove = XMVector3TransformCoord(frontMove, mRotateY);    //移動ベクトル回転
     if (Input::IsKey(DIK_W))
     {
         vPos += frontMove;
@@ -122,7 +123,7 @@ void Controller::Update()
         vPos -= frontMove;   
     }
     //左右移動ベクトル
-    XMVECTOR rightMove =XMVectorSet( mvSpd, 0, 0 ,0);                //右向きのXMFLOAT3構造体を用意し
+    XMVECTOR rightMove =XMVectorSet( mvSpd, 0, 0 ,0);                //右向きのXMVECTOR構造体を用意し
     rightMove = XMVector3TransformCoord(rightMove, mRotateY);    //ベクトル回転
     if (Input::IsKey(DIK_D))
     {
@@ -133,8 +134,9 @@ void Controller::Update()
         vPos -= rightMove;
     }
     XMStoreFloat3(&transform_.position_, vPos);//vPosの結果をtransformに戻して反映させる
+    
     //カメラ
-    XMVECTOR vCam = XMVectorSet(0, 10, -10, 0);
+    XMVECTOR vCam = XMVectorSet(0, 0, -10, 0);
     vCam = XMVector3TransformCoord(vCam, mRotate);
     Camera::SetPosition(vPos + vCam);
     Camera::SetTarget(transform_.position_);        //カメラの焦点はプレイヤーの位置
