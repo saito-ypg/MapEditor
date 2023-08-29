@@ -3,9 +3,7 @@
 
 class Controller : public GameObject
 {
-    XMVECTOR camPos;
-    XMVECTOR camTarget;
-    XMVECTOR vCam;
+   
 public:
     //コンストラクタ
     Controller(GameObject* parent);
