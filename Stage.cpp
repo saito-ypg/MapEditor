@@ -7,7 +7,7 @@ Stage::Stage(GameObject* parent):GameObject(parent, "Stage"),hModel_{-1,-1,-1,-1
     {
         for (int z = 0; z < ZSIZE; z++)
         {
-            table_[x][z] = -1;
+            table_[x][z] = { DEFAULT,0 };
         }
     }
 }
@@ -20,9 +20,9 @@ Stage::~Stage()
 //初期化
 void Stage::Initialize()
 {
-    string modelname[modelNum] = { "Default","Brick","Grass","Sand","Water" };
+    string modelname[NUM] = { "Default","Brick","Grass","Sand","Water" };
     //モデルデータのロード
-    for (int i = 0; i < modelNum; i++)
+    for (int i = 0; i < NUM; i++)
     {
         hModel_[i] = Model::Load("Assets/Box"+modelname[i]+".fbx");
         assert(hModel_[i] >= 0);
@@ -31,9 +31,12 @@ void Stage::Initialize()
     {
         for (int x = 0; x < ZSIZE; x++)
         {
-            table_[x][z] =x % 5;
+            table_[x][z].type_=DEFAULT;
         }
     }
+
+    SetBlockHeight(2, 2, 5);
+    SetBlockType(1, 6, BRICK);
 }
 
 //更新
@@ -49,12 +52,20 @@ void Stage::Draw()
     {
         for (int z = 0; z < stageSize; z++)
         {
-            int type = table_[x][z];
-            Transform boxTrans = transform_;
-            boxTrans.position_.x = 7- x;
-            boxTrans.position_.z =7- z;
-            Model::SetTransform(hModel_[type], boxTrans);
-            Model::Draw(hModel_[type]);
+            for (int y = 0; y < YLIMIT; y++)
+            {
+                
+                if (y <= table_[x][z].height_)
+                {
+                    int type = table_[x][z].type_;
+                    Transform boxTrans = transform_;
+                    boxTrans.position_.x =x-7;
+                    boxTrans.position_.z =z-7;
+                    boxTrans.position_.y = y;
+                    Model::SetTransform(hModel_[type], boxTrans);
+                    Model::Draw(hModel_[type]);
+                }
+            }
         }
     }
    
@@ -64,4 +75,14 @@ void Stage::Draw()
 //開放
 void Stage::Release()
 {
+}
+
+void Stage::SetBlockType(int _x, int _y, BLOCKTYPE _type)
+{
+    if(_x<XSIZE&&_y<ZSIZE&&_type<BLOCKTYPE::NUM)
+    table_[_x][_y].type_ = _type;
+}
+void Stage::SetBlockHeight(int _x, int _y, int _height)
+{
+    table_[_x][_y].height_ = _height;
 }
