@@ -1,5 +1,4 @@
 #include <Windows.h>
-
 #include<cstdlib>
 #pragma comment(lib, "winmm.lib")
 
@@ -8,6 +7,7 @@
 #include"Engine/Input.h"
 #include"Engine/Model.h"
 #include"Engine/RootJob.h"
+#include"DirectXCollision.h"
 const char* WIN_CLASS_NAME = "SampleGame";
 const char* GAME_TITLE = "サンプルゲーム";
 const int WINDOW_WIDTH = 800;  //ウィンドウの幅
@@ -21,7 +21,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 //エントリーポイント
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
+	XMVECTOR beginP = XMVectorSet(3,5,1,0);
+	XMVECTOR dirVec = XMVectorSet(0, -1, 0, 0);
+	XMVECTOR p1 = XMVectorSet(0, 0, 0, 0), p2 = XMVectorSet(0, 0, 3, 0), p3 = XMVectorSet(3, 0, 0, 0);
+	float dist;
 
+	bool result = TriangleTests::Intersects(beginP, dirVec, p1, p2, p3, dist);
 	//ウィンドウクラス（設計図）を作成
 	WNDCLASSEX wc;
 	wc.cbSize = sizeof(WNDCLASSEX);             //この構造体のサイズ

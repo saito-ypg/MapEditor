@@ -32,10 +32,12 @@ void Stage::Initialize()
         for (int x = 0; x < ZSIZE; x++)
         {
             table_[x][z].type_=DEFAULT;
+            SetBlockHeight(x, z, rand() % YLIMIT);
+            SetBlockType(x, z, (BLOCKTYPE)(rand() %NUM));
         }
     }
 
-    SetBlockHeight(2, 2, 5);
+    
     SetBlockType(1, 6, BRICK);
 }
 
@@ -52,19 +54,16 @@ void Stage::Draw()
     {
         for (int z = 0; z < stageSize; z++)
         {
-            for (int y = 0; y < YLIMIT; y++)
-            {
+            for (int y = 0; y <= table_[x][z].height_ ; y++)
+            {                
+                int type = table_[x][z].type_;
+                Transform boxTrans = transform_;
+                boxTrans.position_.x = x - 7;
+                boxTrans.position_.z = z - 7;
+                boxTrans.position_.y = y;
+                Model::SetTransform(hModel_[type], boxTrans);
+                Model::Draw(hModel_[type]);
                 
-                if (y <= table_[x][z].height_)
-                {
-                    int type = table_[x][z].type_;
-                    Transform boxTrans = transform_;
-                    boxTrans.position_.x =x-7;
-                    boxTrans.position_.z =z-7;
-                    boxTrans.position_.y = y;
-                    Model::SetTransform(hModel_[type], boxTrans);
-                    Model::Draw(hModel_[type]);
-                }
             }
         }
     }
@@ -79,10 +78,11 @@ void Stage::Release()
 
 void Stage::SetBlockType(int _x, int _y, BLOCKTYPE _type)
 {
-    if(_x<XSIZE&&_y<ZSIZE&&_type<BLOCKTYPE::NUM)
+    if(_x<XSIZE&&_y<ZSIZE&&_type<BLOCKTYPE::NUM && _type >= BLOCKTYPE::DEFAULT)
     table_[_x][_y].type_ = _type;
 }
 void Stage::SetBlockHeight(int _x, int _y, int _height)
 {
+    if (_x < XSIZE && _y < ZSIZE && _height <YLIMIT&&_height>=0)
     table_[_x][_y].height_ = _height;
 }

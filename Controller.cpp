@@ -133,6 +133,15 @@ void Controller::Update()
     {
         vPos -= rightMove;
     }
+    XMVECTOR upMove = XMVectorSet(0, mvSpd, 0, 0);
+        if (Input::IsKey(DIK_Q))
+        {
+            vPos += upMove;
+        }
+    if (Input::IsKey(DIK_E))
+    {
+        vPos -=upMove;
+    }
     XMStoreFloat3(&transform_.position_, vPos);//vPos‚ÌŒ‹‰Ê‚ğtransform‚É–ß‚µ‚Ä”½‰f‚³‚¹‚é
     
     //ƒJƒƒ‰
