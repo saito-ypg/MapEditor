@@ -4,10 +4,17 @@
 #include <fbxsdk.h>
 #include <string>
 #include "Transform.h"
-class Texture;
 #pragma comment(lib, "LibFbxSDK-Md.lib")
 #pragma comment(lib, "LibXml2-Md.lib")
 #pragma comment(lib, "zlib-Md.lib")
+class Texture;
+struct RayCastData
+{
+	XMFLOAT4 start;
+	XMFLOAT4 dir;
+	bool hit;
+	float dist;
+};
 
 class Fbx
 {
@@ -15,7 +22,7 @@ private:
 	//マテリアル
 	struct MATERIAL
 	{
-		Texture* pTexture;
+		Texture*	pTexture;
 		XMFLOAT4	diffuse;
 	};
 	struct CONSTANT_BUFFER
@@ -23,7 +30,7 @@ private:
 		XMMATRIX	matWVP;
 		XMMATRIX	matNormal;
 		XMFLOAT4	diffuseColor;		// ディフューズカラー（マテリアルの色）
-		int		isTexture;		// テクスチャ貼ってあるかどうか
+		int			isTexture;		// テクスチャ貼ってあるかどうか
 	};
 
 	struct VERTEX
@@ -32,6 +39,9 @@ private:
 		XMVECTOR uv;
 		XMVECTOR normal;
 	};
+	
+	VERTEX* pVertices_;//頂点配列
+	int** ppIndex_;
 	int vertexCount_;	//頂点数
 	int polygonCount_;	//ポリゴン数
 	int materialCount_;	//マテリアルの個数
@@ -48,6 +58,8 @@ public:
 	HRESULT Load(std::string fileName);
 	void    Draw(Transform& transform);
 	void    Release();
+
+	void RayCast(RayCastData& raydata);
 
 
 private:

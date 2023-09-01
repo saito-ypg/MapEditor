@@ -32,11 +32,17 @@ void Stage::Initialize()
         for (int x = 0; x < ZSIZE; x++)
         {
             table_[x][z].type_=DEFAULT;
-            SetBlockHeight(x, z, rand() % YLIMIT);
-            SetBlockType(x, z, (BLOCKTYPE)(rand() %NUM));
+      /*      SetBlockHeight(x, z, rand() % YLIMIT);
+            SetBlockType(x, z, (BLOCKTYPE)(rand() %NUM));*/
         }
     }
-
+    //raycastテスト用
+  /*  Fbx* pFbx = new Fbx;
+    pFbx->Load("Assets/BoxBrick.fbx");
+    RayCastData dat;
+    dat.dir = { 0,-1,0,0 };
+    dat.start = { 0,5,0,0 };
+    pFbx->RayCast(dat);*/
     
     SetBlockType(1, 6, BRICK);
 }
@@ -44,6 +50,7 @@ void Stage::Initialize()
 //更新
 void Stage::Update()
 {
+    
 }
 
 //描画
