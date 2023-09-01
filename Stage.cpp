@@ -36,13 +36,7 @@ void Stage::Initialize()
             SetBlockType(x, z, (BLOCKTYPE)(rand() %NUM));*/
         }
     }
-    //raycastテスト用
-  /*  Fbx* pFbx = new Fbx;
-    pFbx->Load("Assets/BoxBrick.fbx");
-    RayCastData dat;
-    dat.dir = { 0,-1,0,0 };
-    dat.start = { 0,5,0,0 };
-    pFbx->RayCast(dat);*/
+   
     
     SetBlockType(1, 6, BRICK);
 }

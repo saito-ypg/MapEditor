@@ -79,7 +79,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		PostQuitMessage(0); 
 		
 	}//プログラム終了
-	
+	 //raycastテスト用
+	Fbx* pFbx = new Fbx;
+	pFbx->Load("Assets/BoxDefault.fbx");
+	RayCastData dat;
+	dat.dir = { 0,-1,0,0 };
+	dat.start = { 0,5,0,0 };
+	pFbx->RayCast(dat);
+
 	hr = Input::Initialize(hWnd);
 	if (FAILED(hr))
 	{
