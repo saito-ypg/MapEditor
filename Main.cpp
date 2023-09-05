@@ -2,12 +2,12 @@
 #pragma comment(lib, "winmm.lib")
 #include<cstdlib>
 #include<DirectXCollision.h>
-
 #include"Engine/Direct3D.h"
 #include"Engine/Camera.h"
 #include"Engine/Input.h"
 #include"Engine/Model.h"
 #include"Engine/RootJob.h"
+#include"resource.h"
 const char* WIN_CLASS_NAME = "SampleGame";
 const char* GAME_TITLE = "サンプルゲーム";
 const int WINDOW_WIDTH = 800;  //ウィンドウの幅
@@ -16,7 +16,7 @@ RootJob *pRootJob = nullptr;
 
 //プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
+BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
 
 //エントリーポイント
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
@@ -79,7 +79,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		PostQuitMessage(0); 
 		
 	}//プログラム終了
-	 //raycastテスト用
+	
+
 	Fbx* pFbx = new Fbx;
 	pFbx->Load("Assets/BoxDefault.fbx");
 	RayCastData dat;
@@ -100,6 +101,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 	pRootJob = new RootJob(nullptr);//GameObject木構造の最上位のため、親無し
 	pRootJob->Initialize();
+
+	//ダイアログ表示
+	HWND hDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, (DLGPROC)DialogProc);
 
    //メッセージループ（何か起きるのを待つ）
 
@@ -184,4 +188,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);//どのケースにも当てはまらない場合、デフォルトの動きをする
 	
+}
+//ダイアログプロシージャ（ダイアログ専用の関数）
+BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
+{
+	switch (msg)
+	{
+	case WM_INITDIALOG:
+
+		return 0;
+	case WM_COMMAND:
+		switch (LOWORD(wp))
+		{
+		
+		}
+
+	}
+	return FALSE;
 }
