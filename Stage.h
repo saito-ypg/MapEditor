@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include<Windows.h>
 namespace {
 
     const int XSIZE{ 15 };
@@ -17,10 +18,12 @@ namespace {
 }
 class Stage : public GameObject
 {
-   
-    
     int hModel_[NUM];    //モデル番号 
     BLOCKINFO table_[XSIZE][ZSIZE];
+    
+    enum MODE{UP,DOWN,CHANGE} mode_;//ラジオボタンで選択しているモードに応じて変更
+    int select_;//コンボボックスで選択されている種類
+
 public:
     //コンストラクタ
     Stage(GameObject* parent);
@@ -42,4 +45,6 @@ public:
 
     void SetBlockType(int _x, int _y, BLOCKTYPE _type);
     void SetBlockHeight(int _x, int _y, int _height);
+
+    BOOL DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
 };

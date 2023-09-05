@@ -8,6 +8,7 @@
 #include"Engine/Model.h"
 #include"Engine/RootJob.h"
 #include"resource.h"
+#include"Stage.h"
 const char* WIN_CLASS_NAME = "SampleGame";
 const char* GAME_TITLE = "サンプルゲーム";
 const int WINDOW_WIDTH = 800;  //ウィンドウの幅
@@ -189,20 +190,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(hWnd, msg, wParam, lParam);//どのケースにも当てはまらない場合、デフォルトの動きをする
 	
 }
-//ダイアログプロシージャ（ダイアログ専用の関数）
-BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
+//本物のほう
+BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp) 
 {
-	switch (msg)
-	{
-	case WM_INITDIALOG:
-
-		return 0;
-	case WM_COMMAND:
-		switch (LOWORD(wp))
-		{
-		
-		}
-
-	}
-	return FALSE;
+	Stage*pStage=(Stage*)(pRootJob->FindObject("Stage"));
+	return pStage->DialogProc(hDlg, msg, wp, lp);
 }
