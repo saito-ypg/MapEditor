@@ -1,34 +1,36 @@
 #include "Input.h"
 #include<DirectXMath.h>
+#include<string>
+using std::string;
 namespace Input
 {
-	LPDIRECTINPUT8   pDInput = nullptr;
-	LPDIRECTINPUTDEVICE8 pKeyDevice = nullptr;
-	LPDIRECTINPUTDEVICE8 pMouseDevice = nullptr;
-	BYTE keyState[256] = { 0 };
-	BYTE prevKeyState[256] = { 0 }; //前フレームでの各キーの状態
-	DIMOUSESTATE mouseState;
-	DIMOUSESTATE prevMouseState;
-	XMVECTOR mousePosition;
+	LPDIRECTINPUT8   pDInput_ = nullptr;
+	LPDIRECTINPUTDEVICE8 pKeyDevice_ = nullptr;
+	LPDIRECTINPUTDEVICE8 pMouseDevice_ = nullptr;
+	BYTE keyState_[256] = { 0 };
+	BYTE prevKeyState_[256] = { 0 }; //前フレームでの各キーの状態
+	DIMOUSESTATE mouseState_;
+	DIMOUSESTATE prevMouseState_;
+	XMFLOAT3 mousePosition_;
 
 	HRESULT Initialize(HWND hWnd)
 	{
 		HRESULT hr=S_OK;
-		hr=DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&pDInput, nullptr);//Input本体作成
+		hr=DirectInput8Create(GetModuleHandle(nullptr), DIRECTINPUT_VERSION, IID_IDirectInput8, (VOID**)&pDInput_, nullptr);//Input本体作成
 		if (FAILED(hr)) return hr;
-		hr=pDInput->CreateDevice(GUID_SysKeyboard, &pKeyDevice, nullptr);//キーボードとしてデバイスを作成
+		hr=pDInput_->CreateDevice(GUID_SysKeyboard, &pKeyDevice_, nullptr);//キーボードとしてデバイスを作成
 		if (FAILED(hr)) return hr;
-		hr=pKeyDevice->SetDataFormat(&c_dfDIKeyboard);
+		hr=pKeyDevice_->SetDataFormat(&c_dfDIKeyboard);
 		if (FAILED(hr)) return hr;
-		hr=pKeyDevice->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND);
+		hr=pKeyDevice_->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND);
 		if (FAILED(hr)) return hr;
 		
 		//マウス登録
-		hr = pDInput->CreateDevice(GUID_SysMouse, &pMouseDevice, nullptr);
+		hr = pDInput_->CreateDevice(GUID_SysMouse, &pMouseDevice_, nullptr);
 		if (FAILED(hr)) return hr;
-		hr = pMouseDevice->SetDataFormat(&c_dfDIMouse);
+		hr = pMouseDevice_->SetDataFormat(&c_dfDIMouse);
 		if (FAILED(hr)) return hr;
-		hr = pMouseDevice->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND);
+		hr = pMouseDevice_->SetCooperativeLevel(hWnd, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND);
 		if (FAILED(hr)) return hr;
 
 		return S_OK;
@@ -37,24 +39,24 @@ namespace Input
 	HRESULT Update()
 	{
 		//キーボード
-		memcpy(prevKeyState,keyState,sizeof(keyState[0]) * 256);
-		HRESULT hr=pKeyDevice->Acquire();
+		memcpy(prevKeyState_,keyState_,sizeof(keyState_[0]) * 256);
+		HRESULT hr=pKeyDevice_->Acquire();
 		if (FAILED(hr)) return hr;
-		hr=pKeyDevice->GetDeviceState(sizeof(keyState), &keyState);
+		hr=pKeyDevice_->GetDeviceState(sizeof(keyState_), &keyState_);
 		if (FAILED(hr)) return hr;
 
-		//マウス
-		prevMouseState = mouseState;
-		hr = pMouseDevice->Acquire();
+		//マウス	
+		hr = pMouseDevice_->Acquire();
+		memcpy(&prevMouseState_, &mouseState_, sizeof(mouseState_));
 		if (FAILED(hr)) return hr;
-		hr = pMouseDevice->GetDeviceState(sizeof(mouseState), &mouseState);
+		hr = pMouseDevice_->GetDeviceState(sizeof(mouseState_), &mouseState_);
 		if (FAILED(hr)) return hr;
 		return S_OK;
 	}
 
 	bool IsKey(int keyCode)
 	{
-		if (keyState[keyCode]&0x80)	
+		if (keyState_[keyCode]&0x80)	
 		{
 			return true;
 		}
@@ -63,7 +65,7 @@ namespace Input
 	bool IsKeyDown(int keyCode)
 	{
 		//今は押してて、前回は押してない
-		if ((keyState[keyCode] & 0x80)&& !(prevKeyState[keyCode] & 0x80))
+		if ((keyState_[keyCode] & 0x80)&& !(prevKeyState_[keyCode] & 0x80))
 		{
 			return true;
 		}
@@ -73,7 +75,7 @@ namespace Input
 	bool IsKeyUp(int keyCode)
 	{
 		//今は押してなくて、前回は押してる
-		if (!(keyState[keyCode] & 0x80) && (prevKeyState[keyCode] & 0x80))
+		if (!(keyState_[keyCode] & 0x80) && (prevKeyState_[keyCode] & 0x80))
 		{
 			return true;
 		}
@@ -81,7 +83,7 @@ namespace Input
 	}
 	bool IsMouseButton(int buttonCode)
 	{
-		if (mouseState.rgbButtons[buttonCode] & 0x80)
+		if (mouseState_.rgbButtons[buttonCode] & 0x80)
 		{
 			return true;
 		}
@@ -90,7 +92,7 @@ namespace Input
 	bool IsMouseButtonDown(int buttonCode)
 	{
 		//今は押してて、前回は押してない
-		if ((mouseState.rgbButtons[buttonCode] & 0x80) && !(prevMouseState.rgbButtons[buttonCode] & 0x80))
+		if ((mouseState_.rgbButtons[buttonCode] & 0x80) && !(prevMouseState_.rgbButtons[buttonCode] & 0x80))
 		{
 			return true;
 		}
@@ -99,7 +101,7 @@ namespace Input
 	bool IsMouseButtonUp(int buttonCode)
 	{
 		//今は押してなくて、前回は押してる
-		if (!(mouseState.rgbButtons[buttonCode] & 0x80) && (prevMouseState.rgbButtons[buttonCode] & 0x80))
+		if (!(mouseState_.rgbButtons[buttonCode] & 0x80) && (prevMouseState_.rgbButtons[buttonCode] & 0x80))
 		{
 			return true;
 		}
@@ -108,17 +110,25 @@ namespace Input
 
 	void Release()
 	{
-		SAFE_RELEASE(pDInput);
-		SAFE_RELEASE(pKeyDevice);
+		SAFE_RELEASE(pDInput_);
+		SAFE_RELEASE(pKeyDevice_);
 	}
 
-	XMVECTOR GetMousePosition()
+	XMFLOAT3 GetMousePosition()
 	{
-		return mousePosition;
+		return mousePosition_;
 	}
 
+	XMFLOAT3 GetMouseMove()
+	{
+		return XMFLOAT3(mouseState_.lX, mouseState_.lY, mouseState_.lZ);
+	}
 	void SetMousePosition(int x, int y)
 	{
-		mousePosition = XMVectorSet((float)x, (float)y, 0, 0);
+		mousePosition_.x = x;
+		mousePosition_.y = y;
+		std::string resStr = std::to_string(x) + "," + std::to_string(y)+"\n";
+		OutputDebugString(resStr.c_str());
 	}
+	
 }

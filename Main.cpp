@@ -81,13 +81,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		
 	}//ƒvƒƒOƒ‰ƒ€I—¹
 	
-
+#if false //raycast
 	Fbx* pFbx = new Fbx;
 	pFbx->Load("Assets/BoxDefault.fbx");
 	RayCastData dat;
 	dat.dir = { 0,-1,0,0 };
 	dat.start = { 0,5,0,0 };
 	pFbx->RayCast(dat);
+#endif
 
 	hr = Input::Initialize(hWnd);
 	if (FAILED(hr))
