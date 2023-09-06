@@ -93,6 +93,7 @@ namespace Input
 	{
 		//¡‚Í‰Ÿ‚µ‚Ä‚ÄA‘O‰ñ‚Í‰Ÿ‚µ‚Ä‚È‚¢
 		if ((mouseState_.rgbButtons[buttonCode] & 0x80) && !(prevMouseState_.rgbButtons[buttonCode] & 0x80))
+			
 		{
 			return true;
 		}

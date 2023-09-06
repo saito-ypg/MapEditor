@@ -1,6 +1,9 @@
 #include "Stage.h"
 #include"Engine/Model.h"
 #include"resource.h"
+#include"Engine/Direct3d.h"
+#include"Engine/Camera.h"
+#include"Engine/Input.h"
 //コンストラクタ
 Stage::Stage(GameObject* parent):GameObject(parent, "Stage"),hModel_{-1,-1,-1,-1,-1},select_(0)
 {
@@ -45,7 +48,34 @@ void Stage::Initialize()
 //更新
 void Stage::Update()
 {
+    using namespace Direct3D;
+    float w = (float)scrWidth_ / 2.0f;
+    float h= (float)scrHeight_ / 2.0f;
+    float offX = 0, offY=0;//いずれ変えるときのため残す
+    float maxZ = 1, minZ = 0;//         〃
+    XMMATRIX vp =
+    {
+       w,0,0,0,
+       0,-h,0,0,
+       0,0,maxZ-minZ,0,
+       offX+w,offY+h,minZ,1
+    };
+    //各変換行列の逆行列を作る
+    XMMATRIX vpInv = XMMatrixInverse(nullptr, vp);
+    XMMATRIX ProjInv= XMMatrixInverse(nullptr, Camera::GetProjectionMatrix());
+    XMMATRIX viewInv = XMMatrixInverse(nullptr, Camera::GetViewMatrix());
+    XMMATRIX InvMatrix = vpInv * ProjInv * viewInv;
     
+    XMFLOAT3 mousePosFront = Input::GetMousePosition();
+    mousePosFront.z = 0.0f;
+    XMVECTOR vMousePosFront = XMVector3Transform(XMLoadFloat3(&mousePosFront), InvMatrix);
+    XMFLOAT3 mousePosBack = ;
+    mousePosBack.z = 1.0f;
+    XMVECTOR vMousePosBack = XMVector3Transform(XMLoadFloat3(&mousePosBack), InvMatrix);
+
+    //mouseposFrontをベクトルに変換、行列をかける
+    //mousePosBackもベクトルに変換、行列をかける
+    //frontからbackにレイを打ち(model番号はhmodel[0]）、レイが当たったらブレークポイント
 }
 
 //描画

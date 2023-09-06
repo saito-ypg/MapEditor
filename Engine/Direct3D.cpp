@@ -20,9 +20,13 @@ namespace Direct3D
 
 	ID3D11Texture2D* pDepthStencil_;			//深度ステンシル
 	ID3D11DepthStencilView* pDepthStencilView_;		//深度ステンシルビュー
+
+	int scrWidth_, scrHeight_;
 }
 HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 {
+	scrWidth_ = winW;
+	scrHeight_ = winH;
 	HRESULT hr = S_OK;
 		///////////////////////////いろいろ準備するための設定///////////////////////////////
 	//いろいろな設定項目をまとめた構造体

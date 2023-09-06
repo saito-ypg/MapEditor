@@ -22,12 +22,6 @@ BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
 //エントリーポイント
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
-	/*XMVECTOR beginP = XMVectorSet(3,5,1,0);
-	XMVECTOR dirVec = XMVectorSet(0, -1, 0, 0);
-	XMVECTOR p1 = XMVectorSet(0, 0, 0, 0), p2 = XMVectorSet(0, 0, 3, 0), p3 = XMVectorSet(3, 0, 0, 0);
-	float dist;
-
-	bool result = TriangleTests::Intersects(beginP, dirVec, p1, p2, p3, dist);*/
 	//ウィンドウクラス（設計図）を作成
 	WNDCLASSEX wc;
 	wc.cbSize = sizeof(WNDCLASSEX);             //この構造体のサイズ
