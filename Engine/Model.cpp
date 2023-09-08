@@ -77,5 +77,17 @@ void Model::Release()
 
 void Model::RayCast(int hModel, RayCastData& raydata)
 {
+
+	//RayCast前にraycastDataの各情報をワールド空間からモデル空間に変換する
+	XMMATRIX invWorld=XMMatrixInverse(nullptr,modelList_.at(hModel)->transform_.GetWorldMatrix());
+	/*XMVECTOR vPass{ raydata.start.x + raydata.dir.x, raydata.start.y + raydata.dir.y, raydata.start.z + raydata.dir.z , raydata.start.w + raydata.dir.w };
+	XMVECTOR vStart = XMVector3TransformCoord(XMLoadFloat4(&raydata.start), invWorld);
+	vPass = XMVector3TransformCoord(vPass, invWorld);
+	vPass = vPass - vStart;
+
+	XMStoreFloat4(&raydata.dir, vPass);*/
+	XMVECTOR vStart = XMVector3TransformCoord(XMLoadFloat4(&raydata.start), -invWorld);
+	XMStoreFloat4(&raydata.start, vStart);
+//	XMStoreFloat4(&raydata.dir, XMVector4Normalize(XMLoadFloat4(&raydata.dir)));//単位ベクトルにしないとエラーが出る?
 	modelList_.at(hModel)->pFbx_->RayCast(raydata);
 }

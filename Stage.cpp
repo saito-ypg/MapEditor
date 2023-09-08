@@ -14,6 +14,7 @@ Stage::Stage(GameObject* parent):GameObject(parent, "Stage"),hModel_{-1,-1,-1,-1
             table_[x][z] = { DEFAULT,0 };
         }
     }
+    table_[7][7].height_ = 4;
 }
 
 //デストラクタ
@@ -48,11 +49,15 @@ void Stage::Initialize()
 //更新
 void Stage::Update()
 {
+    if (!Input::IsMouseButtonDown(0))
+    {
+        return;
+    }
     using namespace Direct3D;
-    float w = (float)scrWidth_ / 2.0f;
-    float h= (float)scrHeight_ / 2.0f;
-    float offX = 0, offY=0;//いずれ変えるときのため残す
-    float maxZ = 1, minZ = 0;//         〃
+    float w = (float)(scrWidth_ / 2.0f);
+    float h= (float)(scrHeight_ / 2.0f);
+    float offX = 0.0f, offY=0.0f;//いずれ変えるときのため残す
+    float maxZ = 1.0f, minZ = 0.0f;//         〃
     XMMATRIX vp =
     {
        w,0,0,0,
@@ -64,15 +69,37 @@ void Stage::Update()
     XMMATRIX vpInv = XMMatrixInverse(nullptr, vp);
     XMMATRIX ProjInv= XMMatrixInverse(nullptr, Camera::GetProjectionMatrix());
     XMMATRIX viewInv = XMMatrixInverse(nullptr, Camera::GetViewMatrix());
+
     XMMATRIX InvMatrix = vpInv * ProjInv * viewInv;
     
     XMFLOAT3 mousePosFront = Input::GetMousePosition();
     mousePosFront.z = 0.0f;
-    XMVECTOR vMousePosFront = XMVector3Transform(XMLoadFloat3(&mousePosFront), InvMatrix);
-    XMFLOAT3 mousePosBack = ;
+    XMVECTOR vMousePosFront = XMVector3TransformCoord(XMLoadFloat3(&mousePosFront), InvMatrix);
+    XMFLOAT3 mousePosBack = Input::GetMousePosition();
     mousePosBack.z = 1.0f;
-    XMVECTOR vMousePosBack = XMVector3Transform(XMLoadFloat3(&mousePosBack), InvMatrix);
-
+    XMVECTOR vMousePosBack = XMVector3TransformCoord(XMLoadFloat3(&mousePosBack), InvMatrix);
+    for(int x=0;x<XSIZE;x++)
+    {
+        for (int z = 0; z < ZSIZE; z++)
+        {
+            for (int y = 0; y <= table_[x][z].height_; y++)
+            {
+                RayCastData dat;
+                XMStoreFloat4(&dat.start, vMousePosFront);
+                XMStoreFloat4(&dat.dir, vMousePosBack - vMousePosFront);
+                dat.hit = false;
+                Transform t=transform_;
+                t.position_ ={ (float)x - 7, (float)y, (float)z - 7 };
+                Model::SetTransform(hModel_[0], t);
+                Model::RayCast(hModel_[0], dat);
+                if (true) {
+                }
+          
+                
+            }
+        }
+    }
+   
     //mouseposFrontをベクトルに変換、行列をかける
     //mousePosBackもベクトルに変換、行列をかける
     //frontからbackにレイを打ち(model番号はhmodel[0]）、レイが当たったらブレークポイント
@@ -81,10 +108,10 @@ void Stage::Update()
 //描画
 void Stage::Draw()
 {
-    const int stageSize = 15;
-    for (int x = 0; x < stageSize; x++)
+
+    for (int x = 0; x < XSIZE; x++)
     {
-        for (int z = 0; z < stageSize; z++)
+        for (int z = 0; z < ZSIZE; z++)
         {
             for (int y = 0; y <= table_[x][z].height_ ; y++)
             {                

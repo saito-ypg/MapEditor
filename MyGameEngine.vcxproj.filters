@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="ヘッダー ファイル">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -15,6 +11,10 @@
     </Filter>
     <Filter Include="Engine">
       <UniqueIdentifier>{cf6cf47c-ed60-4307-aa1b-f78a5781b3c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -124,16 +124,16 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Stage.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Engine\ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Controller.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Engine\ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Engine\ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="TestScene.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Engine\ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
