@@ -78,6 +78,7 @@ void Stage::Update()
     XMFLOAT3 mousePosBack = Input::GetMousePosition();
     mousePosBack.z = 1.0f;
     XMVECTOR vMousePosBack = XMVector3TransformCoord(XMLoadFloat3(&mousePosBack), InvMatrix);
+    int hitX = -1, hitZ = -1;
     for(int x=0;x<XSIZE;x++)
     {
         for (int z = 0; z < ZSIZE; z++)
@@ -88,11 +89,16 @@ void Stage::Update()
                 XMStoreFloat4(&dat.start, vMousePosFront);
                 XMStoreFloat4(&dat.dir, vMousePosBack - vMousePosFront);
                 dat.hit = false;
-                Transform t=transform_;
-                t.position_ ={ (float)x - 7, (float)y, (float)z - 7 };
+                Transform t;
+                t.position_ ={ (float)x-7 , (float)y, (float)z-7 };
                 Model::SetTransform(hModel_[0], t);
                 Model::RayCast(hModel_[0], dat);
-                if (true) {
+                if (dat.hit) {
+                    
+                    if (hitX > 0 && dat.dist<dist)
+                    table_[x][z].height_++;
+                    break;
+
                 }
           
                 
