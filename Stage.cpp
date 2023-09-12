@@ -114,7 +114,24 @@ void Stage::Update()
             }
         }
     }
-    table_[hitX][hitZ].height_++;
+    BLOCKINFO& hitBox = table_[hitX][hitZ];
+    switch (mode_)
+    {
+    case MODE::UP:
+        
+        if(hitBox.height_<YLIMIT)
+        hitBox.height_++;
+        break;
+    case MODE::DOWN: 
+        if (hitBox.height_>0)
+            hitBox.height_--;
+        break;
+    case MODE::CHANGE:
+        SetBlockType(hitX, hitZ, (BLOCKTYPE)select_);
+        break;
+    
+    }
+
     //mouseposFrontをベクトルに変換、行列をかける
     //mousePosBackもベクトルに変換、行列をかける
     //frontからbackにレイを打ち(model番号はhmodel[0]）、レイが当たったらブレークポイント
@@ -179,10 +196,18 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         return TRUE;
 
     case WM_COMMAND:
-        switch (wp)
+        switch (LOWORD(wp))
         {
+        case IDC_RADIO_UP:
+            mode_ = MODE::UP; break;
+        case IDC_RADIO_DOWN:
+            mode_ = MODE::DOWN; break;
+        case IDC_RADIO_CHANGE:
+            mode_ = MODE::CHANGE; break;
         case IDC_COMBO_TYPE:
-            select_ = SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_GETCURSEL, 0, 0);
+            if(HIWORD(wp)==CBN_SELCHANGE)
+            select_ =(int)SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_GETCURSEL, 0, 0);
+            break;
         }
         return TRUE;
     }
