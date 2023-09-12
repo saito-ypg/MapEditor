@@ -23,7 +23,9 @@ class Stage : public GameObject
     
     enum MODE{UP,DOWN,CHANGE} mode_;//ラジオボタンで選択しているモードに応じて変更
     int select_;//コンボボックスで選択されている種類
-
+    struct EDIT { int x_; int z_; MODE edited_; BLOCKTYPE type_; };
+    std::list<EDIT> editList_;
+    decltype(editList_)::reverse_iterator editItr;
 public:
     //コンストラクタ
     Stage(GameObject* parent);

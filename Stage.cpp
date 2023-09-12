@@ -42,14 +42,39 @@ void Stage::Initialize()
         }
     }
    
-    
+    editItr = editList_.rbegin();
     SetBlockType(1, 6, BRICK);
 }
 
 //更新
 void Stage::Update()
 {
+    if (Input::IsKey(DIK_LCONTROL) && Input::IsKeyDown(DIK_Z))
+    {
+        if (editItr++ != editList_.rend())
+        {
+            EDIT& e = (*editItr);
+            BLOCKINFO& hitBox = table_[e.x_][e.z_];
+            switch (e.edited_)
+            {
+            case MODE::UP:
 
+                if (hitBox.height_>0)
+                    hitBox.height_--;
+                break;
+            case MODE::DOWN:
+                if (hitBox.height_<YLIMIT)
+                    hitBox.height_++;
+                break;
+            case MODE::CHANGE:
+                SetBlockType(e.x_, e.z_, e.type_);
+                break;
+            }
+        }
+        else
+            editItr--;
+        return;
+    }
     if (!Input::IsMouseButtonDown(0))
     {
         return;
@@ -116,6 +141,7 @@ void Stage::Update()
         }
     }
     BLOCKINFO& hitBox = table_[hitX][hitZ];
+    BLOCKTYPE oldType;
     switch (mode_)
     {
     case MODE::UP:
@@ -128,10 +154,12 @@ void Stage::Update()
             hitBox.height_--;
         break;
     case MODE::CHANGE:
+        oldType = hitBox.type_;
         SetBlockType(hitX, hitZ, (BLOCKTYPE)select_);
         break;
-    
     }
+    editList_.push_back(EDIT{ hitX,hitZ,mode_,oldType});
+    editItr = editList_.rbegin();
 
     //mouseposFrontをベクトルに変換、行列をかける
     //mousePosBackもベクトルに変換、行列をかける
