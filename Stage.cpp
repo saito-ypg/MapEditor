@@ -79,6 +79,7 @@ void Stage::Update()
     mousePosBack.z = 1.0f;
     XMVECTOR vMousePosBack = XMVector3TransformCoord(XMLoadFloat3(&mousePosBack), InvMatrix);
     int hitX = -1, hitZ = -1;
+    float hitDist = -1.0f;
     for(int x=0;x<XSIZE;x++)
     {
         for (int z = 0; z < ZSIZE; z++)
@@ -94,9 +95,17 @@ void Stage::Update()
                 Model::SetTransform(hModel_[0], t);
                 Model::RayCast(hModel_[0], dat);
                 if (dat.hit) {
+                    if (hitDist == -1.0f)
+                    {
+                        hitDist = dat.dist;
+                        hitX = x, hitZ = z;
+                    }
+                    else if (/*hitX > 0 && */dat.dist<hitDist)
+                    {
+                        hitDist = dat.dist;
+                        hitX = x, hitZ = z;
+                    }
                     
-                    if (hitX > 0 && dat.dist<dist)
-                    table_[x][z].height_++;
                     break;
 
                 }
@@ -105,7 +114,7 @@ void Stage::Update()
             }
         }
     }
-   
+    table_[hitX][hitZ].height_++;
     //mouseposFrontをベクトルに変換、行列をかける
     //mousePosBackもベクトルに変換、行列をかける
     //frontからbackにレイを打ち(model番号はhmodel[0]）、レイが当たったらブレークポイント
