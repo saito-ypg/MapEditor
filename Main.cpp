@@ -145,6 +145,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			//ƒJƒƒ‰XV
 			Camera::Update();
 			//“ü—Í‚Ìˆ—
+			if(hWnd==GetForegroundWindow())
 			Input::Update();
 			
 			pRootJob->UpdateSub();

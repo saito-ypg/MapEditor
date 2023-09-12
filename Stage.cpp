@@ -49,6 +49,7 @@ void Stage::Initialize()
 //çXêV
 void Stage::Update()
 {
+
     if (!Input::IsMouseButtonDown(0))
     {
         return;
@@ -193,6 +194,7 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_ADDSTRING, 0, (LPARAM)"çª");
         SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_ADDSTRING, 0, (LPARAM)"êÖ");
         SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_SETCURSEL, 0, 0);
+        EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), FALSE);
         return TRUE;
 
     case WM_COMMAND:
@@ -209,8 +211,17 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
             select_ =(int)SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_GETCURSEL, 0, 0);
             break;
         }
+        if(LOWORD(wp)==IDC_RADIO_CHANGE|| LOWORD(wp) == IDC_COMBO_TYPE)
+        {
+            EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), TRUE);
+        }
+        else
+        {
+            EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), FALSE);
+        }
         return TRUE;
     }
+    
     return FALSE;
 }
 
