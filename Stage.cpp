@@ -41,39 +41,49 @@ void Stage::Initialize()
             SetBlockType(x, z, (BLOCKTYPE)(rand() %NUM));*/
         }
     }
-   
+    editList_.push_back(EDIT{ -1,-1,CHANGE,NUM });
     editItr = editList_.rbegin();
     SetBlockType(1, 6, BRICK);
 }
 
 //XV
 void Stage::Update()
-{
-    if (Input::IsKey(DIK_LCONTROL) && Input::IsKeyDown(DIK_Z))
+{   
+    if(Input::IsKey(DIK_LCONTROL))
     {
-        if (editItr++ != editList_.rend())
+        if (Input::IsKeyDown(DIK_Z))
         {
-            EDIT& e = (*editItr);
-            BLOCKINFO& hitBox = table_[e.x_][e.z_];
-            switch (e.edited_)
+            auto nextI = editItr;
+            nextI++;
+            if (&(*nextI) != &editList_.front() && (*nextI).type_ != NUM);
             {
-            case MODE::UP:
+                EDIT& e = (*editItr);
+                BLOCKINFO& hitBox = table_[e.x_][e.z_];
+                switch (e.edited_)
+                {
+                case MODE::UP:
 
-                if (hitBox.height_>0)
-                    hitBox.height_--;
-                break;
-            case MODE::DOWN:
-                if (hitBox.height_<YLIMIT)
-                    hitBox.height_++;
-                break;
-            case MODE::CHANGE:
-                SetBlockType(e.x_, e.z_, e.type_);
-                break;
+                    if (hitBox.height_ > 0)
+                        hitBox.height_--;
+                    break;
+                case MODE::DOWN:
+                    if (hitBox.height_ < YLIMIT)
+                        hitBox.height_++;
+                    break;
+                case MODE::CHANGE:
+                    SetBlockType(e.x_, e.z_, e.type_);
+                    break;
+                }
+                editItr++;
             }
+
+            return;
         }
-        else
-            editItr--;
-        return;
+        else if(Input::IsKeyDown(DIK_Y))
+        {
+
+            return;
+        }
     }
     if (!Input::IsMouseButtonDown(0))
     {
@@ -141,7 +151,7 @@ void Stage::Update()
         }
     }
     BLOCKINFO& hitBox = table_[hitX][hitZ];
-    BLOCKTYPE oldType;
+    BLOCKTYPE oldType=NUM;
     switch (mode_)
     {
     case MODE::UP:
@@ -158,6 +168,7 @@ void Stage::Update()
         SetBlockType(hitX, hitZ, (BLOCKTYPE)select_);
         break;
     }
+    
     editList_.push_back(EDIT{ hitX,hitZ,mode_,oldType});
     editItr = editList_.rbegin();
 
