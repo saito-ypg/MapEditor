@@ -7,4 +7,4 @@
 ComboBoxはそれ自体か種類変更のモードでないときに選択不可能にする
 if(HIWORD(wp)==CBN_SELCHANGE)をつかってComboBox触った瞬間に値を変えるようにした
 ダイアログを触ってるときはクリックしてもステージに影響を及ぼさないようになった（MainのInput::Updateの前にif(hWnd==GetForegroundWindow())を入れてアップデート止めるくらいしかわからなかった）
-(Undo/RedoはList作ってイテレータで～みたいな感じにできそうとは思った）
+(Undo/RedoはList作ってイテレータで～みたいな感じにできそうとは思った。未完成のためUndoブランチに残しています）
