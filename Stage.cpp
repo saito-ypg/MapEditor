@@ -168,7 +168,7 @@ void Stage::Update()
         SetBlockType(hitX, hitZ, (BLOCKTYPE)select_);
         break;
     }
-    
+    editList_.erase(editItr.base(), editList_.end());
     editList_.push_back(EDIT{ hitX,hitZ,mode_,oldType});
     editItr = editList_.rbegin();
 
