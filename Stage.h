@@ -23,7 +23,7 @@ class Stage : public GameObject
     
     enum MODE{UP,DOWN,CHANGE} mode_;//ラジオボタンで選択しているモードに応じて変更
     int select_;//コンボボックスで選択されている種類
-
+    bool isWindowActive_;
 public:
     //コンストラクタ
     Stage(GameObject* parent);

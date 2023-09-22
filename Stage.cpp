@@ -54,6 +54,10 @@ void Stage::Update()
     {
         return;
     }
+    if(isWindowActive_)
+    {
+        return;
+    }
     using namespace Direct3D;
     float w = (float)(scrWidth_ / 2.0f);
     float h= (float)(scrHeight_ / 2.0f);
@@ -219,6 +223,13 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         {
             EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), FALSE);
         }
+
+        return TRUE;
+    case WM_ACTIVATE:
+        if(LOWORD(wp)==WA_CLICKACTIVE)
+            isWindowActive_ = true;
+        else if(LOWORD(wp)==WA_INACTIVE)
+            isWindowActive_ = false;
         return TRUE;
     }
     

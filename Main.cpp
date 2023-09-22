@@ -145,7 +145,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			//カメラ更新
 			Camera::Update();
 			//入力の処理
-			if(hWnd==GetForegroundWindow())
+			//if(hWnd==GetForegroundWindow())　stage.cppで判断するため削除
 			Input::Update();
 			
 			pRootJob->UpdateSub();
