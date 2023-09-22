@@ -50,11 +50,7 @@ void Stage::Initialize()
 void Stage::Update()
 {
 
-    if (!Input::IsMouseButtonDown(0))
-    {
-        return;
-    }
-    if(isWindowActive_)
+    if (!Input::IsMouseButtonDown(0)||isDialogActive_)
     {
         return;
     }
@@ -227,9 +223,9 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         return TRUE;
     case WM_ACTIVATE:
         if(LOWORD(wp)==WA_CLICKACTIVE)
-            isWindowActive_ = true;
+            isDialogActive_ = true;
         else if(LOWORD(wp)==WA_INACTIVE)
-            isWindowActive_ = false;
+            isDialogActive_ = false;
         return TRUE;
     }
     

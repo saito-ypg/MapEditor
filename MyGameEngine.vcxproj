@@ -86,6 +86,9 @@
   <ItemGroup>
     <ResourceCompile Include="MapEditor.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
