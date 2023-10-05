@@ -14,7 +14,7 @@ Stage::Stage(GameObject* parent):GameObject(parent, "Stage"),hModel_{-1,-1,-1,-1
             table_[x][z] = { DEFAULT,0 };
         }
     }
-    table_[7][7].height_ = 4;
+    //table_[7][7].height_ = 4;
 }
 
 //デストラクタ
@@ -168,6 +168,16 @@ void Stage::Release()
 {
 }
 
+BLOCKTYPE Stage::GetBlockType(int _x, int _y)
+{
+    return table_[_x][_y].type_;
+}
+
+int Stage::GetBlockHeight(int _x, int _y)
+{
+    return table_[_x][_y].height_;
+}
+
 void Stage::SetBlockType(int _x, int _y, BLOCKTYPE _type)
 {
     if(_x<XSIZE&&_y<ZSIZE&&_type<BLOCKTYPE::NUM && _type >= BLOCKTYPE::DEFAULT)
@@ -200,6 +210,7 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
     case WM_COMMAND:
         switch (LOWORD(wp))
         {
+       
         case IDC_RADIO_UP:
             mode_ = MODE::UP; break;
         case IDC_RADIO_DOWN:

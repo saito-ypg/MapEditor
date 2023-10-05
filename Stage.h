@@ -1,11 +1,11 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include<Windows.h>
-namespace {
+namespace INFO{
 
     const int XSIZE{ 15 };
     const int ZSIZE{ 15 };
-    const int YLIMIT{ 10 };
+    const int YLIMIT{ 100 };
     enum BLOCKTYPE
     {
         DEFAULT, BRICK, GRASS, SAND, WATER,NUM
@@ -16,8 +16,10 @@ namespace {
         int height_;
     };
 }
+using namespace INFO;
 class Stage : public GameObject
 {
+    
     int hModel_[NUM];    //ÉÇÉfÉãî‘çÜ 
     BLOCKINFO table_[XSIZE][ZSIZE];
     
@@ -43,6 +45,8 @@ public:
     //äJï˙
     void Release() override;
 
+    BLOCKTYPE GetBlockType(int _x, int _y);
+    int GetBlockHeight(int _x, int _y);
     void SetBlockType(int _x, int _y, BLOCKTYPE _type);
     void SetBlockHeight(int _x, int _y, int _height);
 
