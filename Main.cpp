@@ -186,62 +186,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam))
 		{
 		case ID_MENU_SAVE:
-			char fileName[MAX_PATH] = "無題.map";  //ファイル名を入れる変数
-
-			//「ファイルを保存」ダイアログの設定
-			OPENFILENAME ofn;                         	//名前をつけて保存ダイアログの設定用構造体
-			ZeroMemory(&ofn, sizeof(ofn));            	//構造体初期化
-			ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
-			ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0")        //─┬ファイルの種類
-				TEXT("すべてのファイル(*.*)\0*.*\0\0");     //─┘
-			ofn.lpstrFile = fileName;               	//ファイル名
-			ofn.nMaxFile = MAX_PATH;               	//パスの最大文字数
-			ofn.Flags = OFN_OVERWRITEPROMPT;   		//フラグ（同名ファイルが存在したら上書き確認）
-			ofn.lpstrDefExt = "map";                  	//デフォルト拡張子
-
-			//「ファイルを保存」ダイアログ
-			BOOL selFile;
-			selFile = GetSaveFileName(&ofn);
-
-			//キャンセルしたら中断
-			if (selFile == FALSE) return -1;
-			HANDLE hFile;        //ファイルのハンドル
-			hFile = CreateFile(
-				fileName,                 //ファイル名
-				GENERIC_WRITE,           //アクセスモード（書き込み用）
-				0,                      //共有（なし）
-				NULL,                   //セキュリティ属性（継承しない）
-				CREATE_ALWAYS,           //作成方法
-				FILE_ATTRIBUTE_NORMAL,  //属性とフラグ（設定なし）
-				NULL);                  //拡張属性（なし）
-			std::string writeStr;
-			Stage* pStage = (Stage*)(pRootJob->FindObject("Stage"));
-			for (int h = 0; h <ZSIZE; h++)
-			{
-				for (int w = 0; w <XSIZE; w++)
-				{
-					writeStr += std::to_string(pStage->GetBlockType(w, h)) + "," + std::to_string(pStage->GetBlockHeight(w, h));
-					if (w < XSIZE - 1)
-					{
-						writeStr += ",";
-					}
-					else
-					{
-						writeStr += "\n";
-					}
-				}
-			}
-			DWORD dwBytes = 0;  //書き込み位置
-			WriteFile(
-				hFile,                   //ファイルハンドル
-				writeStr.c_str(),                  //保存するデータ（文字列）
-				(DWORD)strlen(writeStr.c_str()),   //書き込む文字数
-				&dwBytes,                //書き込んだサイズを入れる変数
-				NULL);                   //オーバーラップド構造体（今回は使わない）
-
-			CloseHandle(hFile);
-
+			((Stage*)pRootJob->FindChildObject("Stage"))->Save();
 			
+			break; 
+		case ID_MENU_OPEN:
+			OutputDebugString("\nopen");
+			break;
+		case ID_MENU_NEW:
+			OutputDebugString("\nnew");
+			break;
 		}
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);//どのケースにも当てはまらない場合、デフォルトの動きをする
