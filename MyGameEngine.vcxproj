@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="saves\save.map" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MapEditor.rc" />
