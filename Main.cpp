@@ -189,8 +189,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			((Stage*)pRootJob->FindChildObject("Stage"))->Save();
 			
 			break; 
-		case ID_MENU_OPEN:
-			OutputDebugString("\nopen");
+		case ID_MENU_LOAD:
+			((Stage*)pRootJob->FindChildObject("Stage"))->Load();
 			break;
 		case ID_MENU_NEW:
 			OutputDebugString("\nnew");
