@@ -50,7 +50,8 @@ public:
     int GetBlockHeight(int _x, int _y);
     void SetBlockType(int _x, int _y, BLOCKTYPE _type);
     void SetBlockHeight(int _x, int _y, int _height);
-    void Save();//mainのダイアログで呼ばれる
-    void Load();//mainのダイアログで呼ばれる
+    void SaveStage();//mainのダイアログで呼ばれる
+    void LoadStage();//
+    void InitStage();//実装予定
     BOOL DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
 };

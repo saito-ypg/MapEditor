@@ -39,13 +39,11 @@ void Stage::Initialize()
         for (int x = 0; x < ZSIZE; x++)
         {
             table_[x][z].type_=DEFAULT;
-      /*      SetBlockHeight(x, z, rand() % YLIMIT);
-            SetBlockType(x, z, (BLOCKTYPE)(rand() %NUM));*/
         }
     }
    
     
-    SetBlockType(1, 6, BRICK);
+ 
 }
 
 //更新
@@ -190,7 +188,7 @@ void Stage::SetBlockHeight(int _x, int _y, int _height)
     if (_x < XSIZE && _y < ZSIZE && _height <YLIMIT&&_height>=0)
     table_[_x][_y].height_ = _height;
 }
-void Stage::Save()
+void Stage::SaveStage()
 {
     char fileName[MAX_PATH] = "無題.map";  //ファイル名を入れる変数
     //「ファイルを保存」ダイアログの設定
@@ -250,7 +248,7 @@ void Stage::Save()
     CloseHandle(hFile);
 }
 
-void Stage::Load()
+void Stage::LoadStage()
 {
     char fileName[MAX_PATH] = "無題.map";  //ファイル名を入れる変数
     //「ファイルを保存」ダイアログの設定
@@ -268,7 +266,8 @@ void Stage::Load()
     BOOL selFile;
     selFile = GetOpenFileName(&ofn);
     //キャンセルしたら中断
-    
+    if (selFile == FALSE)
+        return;
     /////////ここから読み込み///////
     HANDLE hFile;        //ファイルのハンドル
     hFile = CreateFile(
@@ -288,34 +287,46 @@ void Stage::Load()
 
     DWORD dwBytes = 0; //読み込み位置
 
-    ReadFile(
+    BOOL isread=ReadFile(
         hFile,     //ファイルハンドル
         data,      //データを入れる変数
         fileSize,  //読み込むサイズ
         &dwBytes,  //読み込んだサイズ
         NULL);     //オーバーラップド構造体（今回は使わない）
-
+    if (isread == FALSE)
+    {
+        MessageBox(nullptr, "指定したファイルを読み込めませんでした", "エラー", MB_OK);
+        return;
+    }
     std::istringstream iss{ data };
     std::string Line;
-    char bufSpace;
-    char bufComma;
-    int indexX=0;
+    /*char bufSpace;*/
+    //char bufComma;
+    
     int indexY = 0;
-    while (std::getline(iss, Line), '\n')
+    while (std::getline(iss, Line, '\n'))
     {
+        
         std::istringstream sLine{ Line };
         std::string info;
-        
+        int indexX = 0;
         while (std::getline(sLine,info, ','))
         {
-            std::istringstream sInfo{ info };
-            sInfo >>table_[indexY][indexX].type_ >> bufSpace >> table_[indexY][indexX].height_;
-                indexX++;
+            std::stringstream sInfo{ info };
+            int type;
+            int height;
+            sInfo >>type>>height;
+            SetBlockHeight(indexX, indexY, height);
+            SetBlockType(indexX,indexY,(BLOCKTYPE)type);
+            indexX++;
         }
         indexY++;
     }
 
     CloseHandle(hFile);
+}
+void Stage::InitStage()
+{
 }
 BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 {

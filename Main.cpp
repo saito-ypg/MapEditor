@@ -186,11 +186,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		switch (LOWORD(wParam))
 		{
 		case ID_MENU_SAVE:
-			((Stage*)pRootJob->FindChildObject("Stage"))->Save();
+			((Stage*)pRootJob->FindChildObject("Stage"))->SaveStage();
 			
 			break; 
 		case ID_MENU_LOAD:
-			((Stage*)pRootJob->FindChildObject("Stage"))->Load();
+			((Stage*)pRootJob->FindChildObject("Stage"))->LoadStage();
 			break;
 		case ID_MENU_NEW:
 			OutputDebugString("\nnew");
