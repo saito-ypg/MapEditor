@@ -46,6 +46,7 @@ public:
     //ŠJ•ú
     void Release() override;
 
+    bool isActive;
     BLOCKTYPE GetBlockType(int _x, int _y);
     int GetBlockHeight(int _x, int _y);
     void SetBlockType(int _x, int _y, BLOCKTYPE _type);

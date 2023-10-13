@@ -7,7 +7,7 @@
 #include"Engine/Input.h"
 
 //コンストラクタ
-Stage::Stage(GameObject* parent):GameObject(parent, "Stage"),hModel_{-1,-1,-1,-1,-1},select_(0)
+Stage::Stage(GameObject* parent):GameObject(parent, "Stage"),hModel_{-1,-1,-1,-1,-1},select_(0),isActive(false)
 {
     for(int x=0;x<XSIZE;x++)
     {
@@ -50,7 +50,7 @@ void Stage::Initialize()
 void Stage::Update()
 {
 
-    if (!Input::IsMouseButtonDown(0)||isDialogActive_)
+    if (!Input::IsMouseButtonDown(0)||!isActive)
     {
         return;
     }
@@ -256,7 +256,7 @@ void Stage::LoadStage()
     ZeroMemory(&ofn, sizeof(ofn));            	//構造体初期化
     ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
     ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0")        //─┬ファイルの種類
-        TEXT("テキストファイル(*.txt)\0*.txt\0")				  //  |
+        TEXT("テキストファイル(*.txt)\0*.txt\0")				  //   |
         TEXT("すべてのファイル(*.*)\0*.*\0\0");					  //─┘
     ofn.lpstrFile = fileName;               	//ファイル名
     ofn.nMaxFile = MAX_PATH;               	//パスの最大文字数
@@ -327,6 +327,14 @@ void Stage::LoadStage()
 }
 void Stage::InitStage()
 {
+    for (int i = 0; i < ZSIZE; i++)
+    {
+        for (int j = 0; j < XSIZE; j++)
+        {
+            SetBlockHeight(j, i, 0);
+            SetBlockType(j, i, DEFAULT);
+        }
+    }
 }
 BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 {

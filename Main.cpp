@@ -145,10 +145,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			//ƒJƒƒ‰XV
 			Camera::Update();
 			//“ü—Í‚Ìˆ—
-			//if(hWnd==GetForegroundWindow())@stage.cpp‚Å”»’f‚·‚é‚½‚ßíœ
 			Input::Update();
-
+			((Stage*)pRootJob->FindChildObject("Stage"))->isActive = (hWnd == GetForegroundWindow());
 			pRootJob->UpdateSub();
+
 			//•`‰æ
 			Direct3D::BeginDraw();
 
@@ -193,7 +193,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			((Stage*)pRootJob->FindChildObject("Stage"))->LoadStage();
 			break;
 		case ID_MENU_NEW:
-			OutputDebugString("\nnew");
+			((Stage*)pRootJob->FindChildObject("Stage"))->InitStage();
 			break;
 		}
 	}
