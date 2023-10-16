@@ -11,6 +11,11 @@
 #define IDC_COMBO4                      1015
 #define IDC_COMBO_TYPE                  1015
 #define IDC_BUTTON1                     1016
+#define IDC_RADIO1                      1021
+#define IDC_RADIO2                      1022
+#define IDC_SCROLLBAR1                  1023
+#define IDC_SPIN1                       1024
+#define IDC_EDIT1                       1025
 #define ID_40001                        40001
 #define ID_40002                        40002
 #define ID_40003                        40003
@@ -36,7 +41,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        107
 #define _APS_NEXT_COMMAND_VALUE         40019
-#define _APS_NEXT_CONTROL_VALUE         1021
+#define _APS_NEXT_CONTROL_VALUE         1026
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
