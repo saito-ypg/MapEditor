@@ -4,7 +4,6 @@
 //
 #define IDD_DIALOG1                     101
 #define IDR_MENU1                       104
-#define IDD_DIALOG2                     105
 #define IDC_RADIO_UP                    1009
 #define IDC_RADIO_DOWN                  1010
 #define IDC_RADIO8                      1011

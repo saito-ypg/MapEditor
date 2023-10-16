@@ -257,12 +257,12 @@ void Stage::LoadStage()
     ofn.lStructSize = sizeof(OPENFILENAME);   	//構造体のサイズ
     ofn.lpstrFilter = TEXT("マップデータ(*.map)\0*.map\0")        //─┬ファイルの種類
         TEXT("テキストファイル(*.txt)\0*.txt\0")				  //   |
-        TEXT("すべてのファイル(*.*)\0*.*\0\0");					  //─┘
+        TEXT("すべてのファイル(*.*)\0*.*\0");					  //─┘
     ofn.lpstrFile = fileName;               	//ファイル名
     ofn.nMaxFile = MAX_PATH;               	//パスの最大文字数
     ofn.Flags = OFN_FILEMUSTEXIST;   		//フラグ（同名ファイルが存在したら上書き確認）
     ofn.lpstrDefExt = "map";                  	//デフォルト拡張子
-    //「ファイルを保存」ダイアログ
+    //「ファイルを開く/」ダイアログ
     BOOL selFile;
     selFile = GetOpenFileName(&ofn);
     //キャンセルしたら中断
@@ -298,6 +298,7 @@ void Stage::LoadStage()
         MessageBox(nullptr, "指定したファイルを読み込めませんでした", "エラー", MB_OK);
         return;
     }
+    CloseHandle(hFile);
     std::istringstream iss{ data };
     std::string Line;
     /*char bufSpace;*/
@@ -323,7 +324,7 @@ void Stage::LoadStage()
         indexY++;
     }
 
-    CloseHandle(hFile);
+
 }
 void Stage::InitStage()
 {
