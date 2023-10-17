@@ -5,7 +5,7 @@ namespace INFO{
 
     const int XSIZE{ 15 };
     const int ZSIZE{ 15 };
-    const int YLIMIT{ 100 };
+    const int YLIMIT{ 50 };
     enum BLOCKTYPE
     {
         DEFAULT, BRICK, GRASS, SAND, WATER,NUM
@@ -23,10 +23,10 @@ private:
     int hModel_[NUM];    //モデル番号 
     BLOCKINFO table_[XSIZE][ZSIZE];
     
-    enum MODE{UP,DOWN,CHANGE} mode_;//ラジオボタンで選択しているモードに応じて変更
+    enum MODE{UP,DOWN,CHANGE,SET,ALL} mode_;//ラジオボタンで選択しているモードに応じて変更
     int select_;//コンボボックスで選択されている種類
     bool isDialogActive_;
-   
+    int editHeight_;//高さ設定に使う。
 public:
     //コンストラクタ
     Stage(GameObject* parent);

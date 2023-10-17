@@ -5,7 +5,7 @@
 #include"Engine/Direct3d.h"
 #include"Engine/Camera.h"
 #include"Engine/Input.h"
-
+#include<windowsx.h>
 //コンストラクタ
 Stage::Stage(GameObject* parent):GameObject(parent, "Stage"),hModel_{-1,-1,-1,-1,-1},select_(0),isActive(false)
 {
@@ -130,7 +130,13 @@ void Stage::Update()
     case MODE::CHANGE:
         SetBlockType(hitX, hitZ, (BLOCKTYPE)select_);
         break;
-    
+    case MODE::SET:
+        SetBlockHeight(hitX, hitZ, editHeight_);
+        break;
+    case MODE::ALL: 
+        SetBlockType(hitX, hitZ, (BLOCKTYPE)select_);
+        SetBlockHeight(hitX, hitZ, editHeight_);
+        break;
     }
 
     //mouseposFrontをベクトルに変換、行列をかける
@@ -352,25 +358,43 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_ADDSTRING, 0, (LPARAM)"砂");
         SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_ADDSTRING, 0, (LPARAM)"水");
         SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_SETCURSEL, 0, 0);
-        EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), FALSE);
+
+        Edit_SetText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), "0");
+        char buf[4];
+        GetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), buf, 4);
+        editHeight_ = std::stoi(buf);
+        //EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), FALSE);
         return TRUE;
 
     case WM_COMMAND:
+
         switch (LOWORD(wp))
         {
-       
+
         case IDC_RADIO_UP:
             mode_ = MODE::UP; break;
         case IDC_RADIO_DOWN:
             mode_ = MODE::DOWN; break;
         case IDC_RADIO_CHANGE:
             mode_ = MODE::CHANGE; break;
+        case IDC_RADIO_HEIGHT:
+            mode_ = MODE::SET; break;
+        case IDC_RADIO_ALL:
+            mode_ = MODE::ALL; break;
         case IDC_COMBO_TYPE:
-            if(HIWORD(wp)==CBN_SELCHANGE)
-            select_ =(int)SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_GETCURSEL, 0, 0);
+            if (HIWORD(wp) == CBN_SELCHANGE)
+                select_ = (int)SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_GETCURSEL, 0, 0);
+            break;
+        case ID_EDIT_HEIGHT:
+            if (HIWORD(wp) == EN_CHANGE)
+			{
+				char buf[4];
+				GetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), buf, 4);
+				editHeight_ = std::stoi(buf);
+			}
             break;
         }
-        if(LOWORD(wp)==IDC_RADIO_CHANGE|| LOWORD(wp) == IDC_COMBO_TYPE)
+      /*  if(LOWORD(wp)==IDC_RADIO_CHANGE||LOWORD(wp)==IDC_RADIO_ALL || LOWORD(wp) == IDC_COMBO_TYPE)
         {
             EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), TRUE);
         }
@@ -378,6 +402,16 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         {
             EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), FALSE);
         }
+        if (LOWORD(wp) == IDC_RADIO_HEIGHT || LOWORD(wp) == IDC_RADIO_ALL||LOWORD(wp)==ID_EDIT_HEIGHT)
+        {
+
+            EnableWindow(GetDlgItem(hDlg, ID_EDIT_HEIGHT), TRUE);
+        }
+        else
+        {
+            EnableWindow(GetDlgItem(hDlg, ID_EDIT_HEIGHT), FALSE);
+        }
+        */
 
         return TRUE;
     case WM_ACTIVATE:
