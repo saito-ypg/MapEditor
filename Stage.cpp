@@ -386,11 +386,19 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
                 select_ = (int)SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_GETCURSEL, 0, 0);
             break;
         case ID_EDIT_HEIGHT:
-            if (HIWORD(wp) == EN_CHANGE)
+            if (HIWORD(wp) == EN_KILLFOCUS)
 			{
 				char buf[4];
 				GetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), buf, 4);
-				editHeight_ = std::stoi(buf);
+                int h = std::stoi(buf);
+                if (h > YLIMIT ||h<=0 )
+                {
+                    MessageBox(nullptr, "不正な数値です", "エラー", MB_OK);
+                    string tmp = std::to_string(h);
+                    SetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), tmp.c_str());
+                    break;
+                }
+				editHeight_ = h;
 			}
             break;
         }
