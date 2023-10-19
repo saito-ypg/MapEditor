@@ -6,6 +6,7 @@
 #include"Engine/Camera.h"
 #include"Engine/Input.h"
 #include<windowsx.h>
+#include<Commctrl.h>
 //コンストラクタ
 Stage::Stage(GameObject* parent):GameObject(parent, "Stage"),hModel_{-1,-1,-1,-1,-1},select_(0),isActive(false)
 {
@@ -359,11 +360,12 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_ADDSTRING, 0, (LPARAM)"水");
         SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_SETCURSEL, 0, 0);
 
-        Edit_SetText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), "0");
+        //Edit_SetText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), "0");
         char buf[4];
         GetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), buf, 4);
         editHeight_ = std::stoi(buf);
         //EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), FALSE);
+        SendMessage(GetDlgItem(hDlg, IDC_SPIN_HEIGHT), UDM_SETRANGE, 0, (LPARAM)MAKEWORD(49,0));
         return TRUE;
 
     case WM_COMMAND:
@@ -385,22 +387,21 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
             if (HIWORD(wp) == CBN_SELCHANGE)
                 select_ = (int)SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_GETCURSEL, 0, 0);
             break;
-        case ID_EDIT_HEIGHT:
-            if (HIWORD(wp) == EN_KILLFOCUS)
-			{
-				char buf[4];
-				GetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), buf, 4);
-                int h = std::stoi(buf);
-                if (h > YLIMIT ||h<=0 )
-                {
-                    MessageBox(nullptr, "不正な数値です", "エラー", MB_OK);
-                    string tmp = std::to_string(h);
-                    SetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), tmp.c_str());
-                    break;
-                }
-				editHeight_ = h;
-			}
-            break;
+        }
+        if (HIWORD(wp) == EN_KILLFOCUS)
+        {
+            char buf[4];
+            GetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), buf, 4);
+            int h = std::stoi(buf);
+            if (h >= YLIMIT || h < 0)
+            {
+                string t = { "0～" +std::to_string(YLIMIT-1) + "の値にしてください" };
+                MessageBox(nullptr,t.c_str(), "不正な値", MB_OK);
+                string tmp = std::to_string(editHeight_);
+                SetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), tmp.c_str());
+               // SetFocus(GetDlgItem(hDlg, ID_EDIT_HEIGHT));
+            }
+            editHeight_ = h;
         }
       /*  if(LOWORD(wp)==IDC_RADIO_CHANGE||LOWORD(wp)==IDC_RADIO_ALL || LOWORD(wp) == IDC_COMBO_TYPE)
         {
@@ -422,12 +423,12 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         */
 
         return TRUE;
-    case WM_ACTIVATE:
-        if(LOWORD(wp)==WA_CLICKACTIVE)
-            isDialogActive_ = true;
-        else if(LOWORD(wp)==WA_INACTIVE)
-            isDialogActive_ = false;
-        return TRUE;
+    //case WM_ACTIVATE:
+    //    if(LOWORD(wp)==WA_CLICKACTIVE)
+    //        isDialogActive_ = true;
+    //    else if(LOWORD(wp)==WA_INACTIVE)
+    //        isDialogActive_ = false;
+    //    return TRUE;
     }
     
     return FALSE;
