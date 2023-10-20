@@ -293,7 +293,7 @@ void Stage::LoadStage()
     data = new char[fileSize];
 
     DWORD dwBytes = 0; //読み込み位置
-    CloseHandle(hFile);
+    
     BOOL isread=ReadFile(
         hFile,     //ファイルハンドル
         data,      //データを入れる変数
@@ -305,7 +305,7 @@ void Stage::LoadStage()
         MessageBox(nullptr, "指定したファイルを読み込めませんでした", "エラー", MB_OK);
         return;
     }
- 
+    CloseHandle(hFile);
     std::istringstream iss{ data };
     std::string Line;
     /*char bufSpace;*/
