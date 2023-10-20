@@ -293,7 +293,7 @@ void Stage::LoadStage()
     data = new char[fileSize];
 
     DWORD dwBytes = 0; //読み込み位置
-
+    CloseHandle(hFile);
     BOOL isread=ReadFile(
         hFile,     //ファイルハンドル
         data,      //データを入れる変数
@@ -305,7 +305,7 @@ void Stage::LoadStage()
         MessageBox(nullptr, "指定したファイルを読み込めませんでした", "エラー", MB_OK);
         return;
     }
-    CloseHandle(hFile);
+ 
     std::istringstream iss{ data };
     std::string Line;
     /*char bufSpace;*/
@@ -403,32 +403,10 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
             }
             editHeight_ = h;
         }
-      /*  if(LOWORD(wp)==IDC_RADIO_CHANGE||LOWORD(wp)==IDC_RADIO_ALL || LOWORD(wp) == IDC_COMBO_TYPE)
-        {
-            EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), TRUE);
-        }
-        else
-        {
-            EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), FALSE);
-        }
-        if (LOWORD(wp) == IDC_RADIO_HEIGHT || LOWORD(wp) == IDC_RADIO_ALL||LOWORD(wp)==ID_EDIT_HEIGHT)
-        {
-
-            EnableWindow(GetDlgItem(hDlg, ID_EDIT_HEIGHT), TRUE);
-        }
-        else
-        {
-            EnableWindow(GetDlgItem(hDlg, ID_EDIT_HEIGHT), FALSE);
-        }
-        */
+     
 
         return TRUE;
-    //case WM_ACTIVATE:
-    //    if(LOWORD(wp)==WA_CLICKACTIVE)
-    //        isDialogActive_ = true;
-    //    else if(LOWORD(wp)==WA_INACTIVE)
-    //        isDialogActive_ = false;
-    //    return TRUE;
+
     }
     
     return FALSE;
