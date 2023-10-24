@@ -13,7 +13,7 @@ const char* WIN_CLASS_NAME = "SampleGame";
 const char* GAME_TITLE = "サンプルゲーム";
 const int WINDOW_WIDTH = 800;  //ウィンドウの幅
 const int WINDOW_HEIGHT = 600; //ウィンドウの高さ
-RootJob *pRootJob = nullptr;
+RootJob* pRootJob = nullptr;
 
 //プロトタイプ宣言
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -32,22 +32,22 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	wc.hIcon = LoadIcon(NULL, IDI_APPLICATION); //アイコン
 	wc.hIconSm = LoadIcon(NULL, IDI_WINLOGO);   //小さいアイコン
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);   //マウスカーソル
-	wc.lpszMenuName = NULL;                     //メニュー（なし）
+	wc.lpszMenuName = MAKEINTRESOURCE(IDR_MENU1);                     //メニュー（なし）
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH); //背景（白）
-	
-	
+
+
 	RegisterClassEx(&wc);  //クラスを登録
 
 	//ウィンドウサイズの計算
 	RECT winRect = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT };
-	AdjustWindowRect(&winRect, WS_OVERLAPPEDWINDOW, FALSE);
+	AdjustWindowRect(&winRect, WS_OVERLAPPEDWINDOW, TRUE);
 	int winW = winRect.right - winRect.left;     //ウィンドウ幅
 	int winH = winRect.bottom - winRect.top;     //ウィンドウ高さ
 
 
-   //ウィンドウを作成
+	//ウィンドウを作成
 
 	HWND hWnd = CreateWindow(
 		WIN_CLASS_NAME,         //ウィンドウクラス名
@@ -62,19 +62,19 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 		hInstance,           //インスタンス
 		NULL                 //パラメータ（なし）
 	);
-	
 
-   //ウィンドウを表示
+
+	//ウィンドウを表示
 	ShowWindow(hWnd, nCmdShow);
 
 	HRESULT hr;
-	hr=Direct3D::Initialize(WINDOW_WIDTH, WINDOW_HEIGHT, hWnd);
-	if (FAILED(hr)) 
-	{ 
-		PostQuitMessage(0); 
-		
+	hr = Direct3D::Initialize(WINDOW_WIDTH, WINDOW_HEIGHT, hWnd);
+	if (FAILED(hr))
+	{
+		PostQuitMessage(0);
+
 	}//プログラム終了
-	
+
 #if false //raycast
 	Fbx* pFbx = new Fbx;
 	pFbx->Load("Assets/BoxDefault.fbx");
@@ -88,10 +88,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	if (FAILED(hr))
 	{
 		MessageBox(nullptr, "入力の初期化に失敗しました", "エラー", MB_OK);
-		PostQuitMessage(0);	
+		PostQuitMessage(0);
 	}
-	
-	
+
+
 
 	Camera::Initialize();
 
@@ -101,7 +101,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	//ダイアログ表示
 	HWND hDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, (DLGPROC)DialogProc);
 
-   //メッセージループ（何か起きるのを待つ）
+	//メッセージループ（何か起きるのを待つ）
 
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));
@@ -132,26 +132,26 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 				countFps = 0;
 				startTime = nowTime;
 			}
-			if ((nowTime - lastUpdateTime)*60 <= 1000.0f )
+			if ((nowTime - lastUpdateTime) * 60 <= 1000.0f)
 			{
 				continue;
 			}
 			lastUpdateTime = nowTime;
 			countFps++;
-			
+
 			timeEndPeriod(1);
-	
+
 			//ゲームの処理
 			//カメラ更新
 			Camera::Update();
 			//入力の処理
-			if(hWnd==GetForegroundWindow())
 			Input::Update();
-			
+			((Stage*)pRootJob->FindChildObject("Stage"))->isActive = (hWnd == GetForegroundWindow());
 			pRootJob->UpdateSub();
+
 			//描画
 			Direct3D::BeginDraw();
-			
+
 			//ルートジョブからすべての子オブジェクトのdrawを呼ぶ
 			pRootJob->DrawSub();
 
@@ -164,7 +164,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 	Input::Release();
 	Direct3D::Release();
-	
+
 
 	return 0;
 }
@@ -182,13 +182,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 		Input::SetMousePosition(LOWORD(lParam), HIWORD(lParam));
 		return 0;
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case ID_MENU_SAVE:
+			((Stage*)pRootJob->FindChildObject("Stage"))->SaveStage();
+			
+			break; 
+		case ID_MENU_LOAD:
+			((Stage*)pRootJob->FindChildObject("Stage"))->LoadStage();
+			break;
+		case ID_MENU_NEW:
+			((Stage*)pRootJob->FindChildObject("Stage"))->InitStage();
+			break;
+		}
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);//どのケースにも当てはまらない場合、デフォルトの動きをする
-	
+
 }
 //本物のほう
-BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp) 
+BOOL CALLBACK DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 {
-	Stage*pStage=(Stage*)(pRootJob->FindObject("Stage"));
+	Stage* pStage = (Stage*)(pRootJob->FindObject("Stage"));
 	return pStage->DialogProc(hDlg, msg, wp, lp);
 }

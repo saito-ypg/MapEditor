@@ -1,11 +1,11 @@
 #pragma once
 #include "Engine/GameObject.h"
 #include<Windows.h>
-namespace {
+namespace INFO{
 
     const int XSIZE{ 15 };
     const int ZSIZE{ 15 };
-    const int YLIMIT{ 10 };
+    const int YLIMIT{ 50 };
     enum BLOCKTYPE
     {
         DEFAULT, BRICK, GRASS, SAND, WATER,NUM
@@ -15,17 +15,25 @@ namespace {
         BLOCKTYPE type_;
         int height_;
     };
+    struct BEFOREBLOCK
+    {
+        int x_;
+        int y_;
+        BLOCKTYPE t_;
+        int height_;
+    };
 }
+using namespace INFO;
 class Stage : public GameObject
 {
+private:
     int hModel_[NUM];    //モデル番号 
     BLOCKINFO table_[XSIZE][ZSIZE];
     
-    enum MODE{UP,DOWN,CHANGE} mode_;//ラジオボタンで選択しているモードに応じて変更
+    enum MODE{UP,DOWN,CHANGE,SET,ALL} mode_;//ラジオボタンで選択しているモードに応じて変更
     int select_;//コンボボックスで選択されている種類
-    struct EDIT { int x_; int z_; MODE edited_; BLOCKTYPE type_; };
-    std::list<EDIT> editList_;
-    decltype(editList_)::reverse_iterator editItr;
+    bool isDialogActive_;
+    int editHeight_;//高さ設定に使う。
 public:
     //コンストラクタ
     Stage(GameObject* parent);
@@ -45,8 +53,13 @@ public:
     //開放
     void Release() override;
 
+    bool isActive;
+    BLOCKTYPE GetBlockType(int _x, int _y);
+    int GetBlockHeight(int _x, int _y);
     void SetBlockType(int _x, int _y, BLOCKTYPE _type);
     void SetBlockHeight(int _x, int _y, int _height);
-
+    void SaveStage();//mainのダイアログで呼ばれる
+    void LoadStage();//
+    void InitStage();//実装予定
     BOOL DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
 };
