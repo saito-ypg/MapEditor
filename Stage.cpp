@@ -7,6 +7,7 @@
 #include"Engine/Input.h"
 #include<windowsx.h>
 #include<Commctrl.h>
+#include<stack>
 //コンストラクタ
 Stage::Stage(GameObject* parent):GameObject(parent, "Stage"),hModel_{-1,-1,-1,-1,-1},select_(0),isActive(false)
 {

@@ -15,6 +15,13 @@ namespace INFO{
         BLOCKTYPE type_;
         int height_;
     };
+    struct BEFOREBLOCK
+    {
+        int x_;
+        int y_;
+        BLOCKTYPE t_;
+        int height_;
+    };
 }
 using namespace INFO;
 class Stage : public GameObject
