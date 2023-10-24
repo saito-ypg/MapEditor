@@ -58,14 +58,12 @@ void Stage::Update()
     using namespace Direct3D;
     float w = (float)(scrWidth_ / 2.0f);
     float h= (float)(scrHeight_ / 2.0f);
-    float offX = 0.0f, offY=0.0f;//いずれ変えるときのため残す
-    float maxZ = 1.0f, minZ = 0.0f;//         〃
     XMMATRIX vp =
     {
        w,0,0,0,
        0,-h,0,0,
-       0,0,maxZ-minZ,0,
-       offX+w,offY+h,minZ,1
+       0,0,1,0,
+       w,h,0,1
     };
     //各変換行列の逆行列を作る
     XMMATRIX vpInv = XMMatrixInverse(nullptr, vp);
