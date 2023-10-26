@@ -79,7 +79,7 @@ void Stage::Update()
     mousePosBack.z = 1.0f;
     XMVECTOR vMousePosBack = XMVector3TransformCoord(XMLoadFloat3(&mousePosBack), InvMatrix);
     int hitX = -1, hitZ = -1;
-    float hitDist =9999999;
+    float hitDist =FLT_MAX;
     for(int x=0;x<XSIZE;x++)
     {
         for (int z = 0; z < ZSIZE; z++)
@@ -95,12 +95,7 @@ void Stage::Update()
                 Model::SetTransform(hModel_[0], t);
                 Model::RayCast(hModel_[0], dat);
                 if (dat.hit) {
-                    /*if (hitDist == -1.0f)
-                    {
-                        hitDist = dat.dist;
-                        hitX = x, hitZ = z;
-                    }
-                    else */if (/*hitX > 0 && */dat.dist<hitDist)
+                    if (dat.dist<hitDist)
                     {
                         hitDist = dat.dist;
                         hitX = x, hitZ = z;
@@ -344,6 +339,10 @@ void Stage::InitStage()
 }
 BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 {
+    class ACTIVE {public:
+        bool type = false, height=false;
+        void Set(bool t, bool h) { type = t, height = h; }
+    };
     switch (msg)
     {
         //ダイアログができたタイミング
@@ -358,35 +357,52 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_ADDSTRING, 0, (LPARAM)"水");
         SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_SETCURSEL, 0, 0);
 
-        //Edit_SetText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), "0");
         char buf[4];
         GetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), buf, 4);
         editHeight_ = std::stoi(buf);
-        //EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), FALSE);
+        EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), FALSE);
+        EnableWindow(GetDlgItem(hDlg, ID_EDIT_HEIGHT), FALSE);
+        EnableWindow(GetDlgItem(hDlg, IDC_SPIN_HEIGHT), FALSE);
         SendMessage(GetDlgItem(hDlg, IDC_SPIN_HEIGHT), UDM_SETRANGE, 0, (LPARAM)MAKEWORD(49,0));
         return TRUE;
 
     case WM_COMMAND:
-
+        ACTIVE active;
         switch (LOWORD(wp))
         {
 
         case IDC_RADIO_UP:
-            mode_ = MODE::UP; break;
+            mode_ = MODE::UP;
+            active.Set(false, false); break;
         case IDC_RADIO_DOWN:
-            mode_ = MODE::DOWN; break;
+            mode_ = MODE::DOWN;
+            active.Set(false, false); break;
         case IDC_RADIO_CHANGE:
-            mode_ = MODE::CHANGE; break;
+            mode_ = MODE::CHANGE; 
+            active.Set(true, false); break;
         case IDC_RADIO_HEIGHT:
-            mode_ = MODE::SET; break;
+            mode_ = MODE::SET; 
+            active.Set(false,true); break;
         case IDC_RADIO_ALL:
-            mode_ = MODE::ALL; break;
+            mode_ = MODE::ALL;
+            active.Set(true, true); break;
         case IDC_COMBO_TYPE:
             if (HIWORD(wp) == CBN_SELCHANGE)
                 select_ = (int)SendMessage(GetDlgItem(hDlg, IDC_COMBO_TYPE), CB_GETCURSEL, 0, 0);
+            active.Set(true, false);
             break;
+        case IDC_SPIN_HEIGHT:
+            active.Set(false, true); break;
+        case ID_EDIT_HEIGHT:
+            active.Set(false,true); break;
         }
-        if (HIWORD(wp) == EN_KILLFOCUS)
+        if (IsDlgButtonChecked(hDlg, IDC_RADIO_ALL) == BST_CHECKED)
+            active.Set(true, true);
+		EnableWindow(GetDlgItem(hDlg, IDC_COMBO_TYPE), active.type);
+		EnableWindow(GetDlgItem(hDlg, ID_EDIT_HEIGHT), active.height);
+		EnableWindow(GetDlgItem(hDlg, IDC_SPIN_HEIGHT), active.height);
+        
+        if (HIWORD(wp) == EN_KILLFOCUS)//editControlの入力終わったら
         {
             char buf[4];
             GetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), buf, 4);
