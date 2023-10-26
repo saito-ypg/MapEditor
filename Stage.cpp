@@ -339,10 +339,7 @@ void Stage::InitStage()
 }
 BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 {
-    class ACTIVE {public:
-        bool type = false, height=false;
-        void Set(bool t, bool h) { type = t, height = h; }
-    };
+    
     switch (msg)
     {
         //ダイアログができたタイミング
@@ -367,7 +364,11 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
         return TRUE;
 
     case WM_COMMAND:
-        ACTIVE active;
+        class ACTIVE {
+        public:
+            bool type = false, height = false;
+            void Set(bool t, bool h) { type = t, height = h; }
+        }active;//combobox,edit,spinを有効にするかに使用
         switch (LOWORD(wp))
         {
 
@@ -403,26 +404,22 @@ BOOL Stage::DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp)
 		EnableWindow(GetDlgItem(hDlg, IDC_SPIN_HEIGHT), active.height);
         
         if (HIWORD(wp) == EN_KILLFOCUS)//editControlの入力終わったら
-        {
+        {//中身を取り出す
             char buf[4];
             GetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), buf, 4);
             int h = std::stoi(buf);
-            if (h >= YLIMIT || h < 0)
+            if (h >= YLIMIT || h < 0)//範囲外ならメッセージ出して値戻す
             {
                 string t = { "0～" +std::to_string(YLIMIT-1) + "の値にしてください" };
                 MessageBox(nullptr,t.c_str(), "不正な値", MB_OK);
                 string tmp = std::to_string(editHeight_);
                 SetWindowText(GetDlgItem(hDlg, ID_EDIT_HEIGHT), tmp.c_str());
-               // SetFocus(GetDlgItem(hDlg, ID_EDIT_HEIGHT));
             }
             editHeight_ = h;
         }
-     
-
         return TRUE;
 
     }
-    
     return FALSE;
 }
 

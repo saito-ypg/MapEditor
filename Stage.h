@@ -25,8 +25,7 @@ private:
     
     enum MODE{UP,DOWN,CHANGE,SET,ALL} mode_;//ラジオボタンで選択しているモードに応じて変更
     int select_;//コンボボックスで選択されている種類
-    bool isDialogActive_;
-    int editHeight_;//高さ設定に使う。
+    int editHeight_;//高さ指定に使う
 public:
     //コンストラクタ
     Stage(GameObject* parent);
@@ -46,13 +45,13 @@ public:
     //開放
     void Release() override;
 
-    bool isActive;
+    bool isActive;//メインのウィンドウがアクティブか
     BLOCKTYPE GetBlockType(int _x, int _y);
     int GetBlockHeight(int _x, int _y);
     void SetBlockType(int _x, int _y, BLOCKTYPE _type);
     void SetBlockHeight(int _x, int _y, int _height);
-    void SaveStage();//mainのダイアログで呼ばれる
-    void LoadStage();//
-    void InitStage();//実装予定
+    void SaveStage();//ダイアログで呼ばれる
+    void LoadStage();//ダイアログで呼ばれる
+    void InitStage();//ダイアログで呼ばれる。更地にするだけ
     BOOL DialogProc(HWND hDlg, UINT msg, WPARAM wp, LPARAM lp);
 };
