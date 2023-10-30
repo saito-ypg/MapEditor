@@ -35,11 +35,11 @@ void Stage::Initialize()
         hModel_[i] = Model::Load("Assets/Box"+modelname[i]+".fbx");
         assert(hModel_[i] >= 0);
     }
-    for (int z = 0; z < XSIZE; z++)
+    for (int z = 0; z < ZSIZE; z++)
     {
-        for (int x = 0; x < ZSIZE; x++)
+        for (int x = 0; x < XSIZE; x++)
         {
-            table_[x][z].type_=DEFAULT;
+            table_[z][x].type_=DEFAULT;
         }
     }
    

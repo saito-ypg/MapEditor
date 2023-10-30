@@ -3,7 +3,7 @@
 #include<Windows.h>
 namespace INFO{
 
-    const int XSIZE{ 15 };
+    const int XSIZE{ 5 };
     const int ZSIZE{ 15 };
     const int YLIMIT{ 50 };
     enum BLOCKTYPE
@@ -21,7 +21,7 @@ class Stage : public GameObject
 {
 private:
     int hModel_[NUM];    //モデル番号 
-    BLOCKINFO table_[XSIZE][ZSIZE];
+    BLOCKINFO table_[ZSIZE][XSIZE];
     
     enum MODE{UP,DOWN,CHANGE,SET,ALL} mode_;//ラジオボタンで選択しているモードに応じて変更
     int select_;//コンボボックスで選択されている種類
