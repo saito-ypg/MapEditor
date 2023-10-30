@@ -299,6 +299,8 @@ void Stage::LoadStage()
         return;
     }
     CloseHandle(hFile);
+
+    InitStage();
     std::istringstream iss{ data };
     std::string Line;
     /*char bufSpace;*/
