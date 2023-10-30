@@ -10,11 +10,11 @@
 //コンストラクタ
 Stage::Stage(GameObject* parent):GameObject(parent, "Stage"),hModel_{-1,-1,-1,-1,-1},select_(0),isActive(false)
 {
-    for(int x=0;x<XSIZE;x++)
+    for(int z = 0; z < ZSIZE; z++)
     {
-        for (int z = 0; z < ZSIZE; z++)
+        for (int x = 0; x < XSIZE; x++)
         {
-            table_[x][z] = { DEFAULT,0 };
+            table_[z][x] = { DEFAULT,0 };
         }
     }
     //table_[7][7].height_ = 4;
@@ -80,9 +80,9 @@ void Stage::Update()
     XMVECTOR vMousePosBack = XMVector3TransformCoord(XMLoadFloat3(&mousePosBack), InvMatrix);
     int hitX = -1, hitZ = -1;
     float hitDist =FLT_MAX;
-    for(int x=0;x<XSIZE;x++)
+    for(int z = 0; z < ZSIZE; z++)
     {
-        for (int z = 0; z < ZSIZE; z++)
+        for (int x = 0; x < XSIZE; x++)
         {
             for (int y = 0; y <= table_[x][z].height_; y++)
             {
@@ -142,13 +142,13 @@ void Stage::Update()
 void Stage::Draw()
 {
 
-    for (int x = 0; x < XSIZE; x++)
+    for (int z = 0; z < ZSIZE; z++)
     {
-        for (int z = 0; z < ZSIZE; z++)
+        for (int x = 0; x < XSIZE; x++)
         {
-            for (int y = 0; y <= table_[x][z].height_ ; y++)
+            for (int y = 0; y <= table_[z][x].height_ ; y++)
             {                
-                int type = table_[x][z].type_;
+                int type = table_[z][x].type_;
                 Transform boxTrans = transform_;
                 boxTrans.position_.x = x - 7;
                 boxTrans.position_.z = z - 7;
@@ -170,23 +170,23 @@ void Stage::Release()
 
 BLOCKTYPE Stage::GetBlockType(int _x, int _y)
 {
-    return table_[_x][_y].type_;
+    return table_[_y][_x].type_;
 }
 
 int Stage::GetBlockHeight(int _x, int _y)
 {
-    return table_[_x][_y].height_;
+    return table_[_y][_x].height_;
 }
 
 void Stage::SetBlockType(int _x, int _y, BLOCKTYPE _type)
 {
     if(_x<XSIZE&&_y<ZSIZE&&_type<BLOCKTYPE::NUM && _type >= BLOCKTYPE::DEFAULT)
-    table_[_x][_y].type_ = _type;
+    table_[_y][_x].type_ = _type;
 }
 void Stage::SetBlockHeight(int _x, int _y, int _height)
 {
     if (_x < XSIZE && _y < ZSIZE && _height <YLIMIT&&_height>=0)
-    table_[_x][_y].height_ = _height;
+    table_[_y][_x].height_ = _height;
 }
 void Stage::SaveStage()
 {
@@ -224,7 +224,7 @@ void Stage::SaveStage()
     {
         for (int w = 0; w < XSIZE; w++)
         {
-            writeStr += std::to_string(table_[w][h].type_) + " " + std::to_string(table_[w][h].height_);
+            writeStr += std::to_string(table_[h][w].type_) + " " + std::to_string(table_[h][w].height_);
             /*if (w < XSIZE - 1)
             {
                 writeStr += ",";
