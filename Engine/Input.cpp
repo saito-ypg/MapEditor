@@ -128,8 +128,6 @@ namespace Input
 	{
 		mousePosition_.x = x;
 		mousePosition_.y = y;
-		std::string resStr = std::to_string(x) + "," + std::to_string(y)+"\n";
-		OutputDebugString(resStr.c_str());
 	}
 	
 }

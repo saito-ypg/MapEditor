@@ -10,11 +10,11 @@
 //コンストラクタ
 Stage::Stage(GameObject* parent) :GameObject(parent, "Stage"), hModel_{ -1,-1,-1,-1,-1 }, select_(0), isActive(false)
 {
-	for (int x = 0; x < XSIZE; x++)
+	for (int z = 0; z < ZSIZE; z++)
 	{
-		for (int z = 0; z < ZSIZE; z++)
+		for (int x = 0;x < XSIZE; x++)
 		{
-			table_[x][z] = { DEFAULT,0 };
+			table_[z][x] = { DEFAULT,0 };
 		}
 	}
 }
@@ -34,11 +34,11 @@ void Stage::Initialize()
 		hModel_[i] = Model::Load("Assets/Box" + modelname[i] + ".fbx");
 		assert(hModel_[i] >= 0);
 	}
-	for (int z = 0; z < XSIZE; z++)
+	for (int z = 0; z <ZSIZE; z++)
 	{
-		for (int x = 0; x < ZSIZE; x++)
+		for (int x = 0; x < XSIZE; x++)
 		{
-			table_[x][z].type_ = DEFAULT;
+			table_[z][x].type_ = DEFAULT;
 		}
 	}
 }
@@ -76,11 +76,11 @@ void Stage::Update()
 	XMVECTOR vMousePosBack = XMVector3TransformCoord(XMLoadFloat3(&mousePosBack), InvMatrix);
 	int hitX = -1, hitZ = -1;
 	float hitDist = FLT_MAX;
-	for (int x = 0; x < XSIZE; x++)
+	for (int z = 0; z < ZSIZE; z++)
 	{
-		for (int z = 0; z < ZSIZE; z++)
+		for (int x = 0; x < XSIZE; x++)
 		{
-			for (int y = 0; y <= table_[x][z].height_; y++)
+			for (int y = 0; y <= table_[z][x].height_; y++)
 			{
 				RayCastData dat;
 				XMStoreFloat4(&dat.start, vMousePosFront);
@@ -104,7 +104,7 @@ void Stage::Update()
 			}
 		}
 	}
-	BLOCKINFO& hitBox = table_[hitX][hitZ];
+	BLOCKINFO& hitBox = table_[hitZ][hitX];
 	switch (mode_)
 	{
 	case MODE::UP:
@@ -137,13 +137,13 @@ void Stage::Update()
 void Stage::Draw()
 {
 
-	for (int x = 0; x < XSIZE; x++)
+	for (int z = 0; z < ZSIZE; z++)
 	{
-		for (int z = 0; z < ZSIZE; z++)
+		for (int x = 0; x < XSIZE; x++)
 		{
-			for (int y = 0; y <= table_[x][z].height_; y++)
+			for (int y = 0; y <= table_[z][x].height_; y++)
 			{
-				int type = table_[x][z].type_;
+				int type = table_[z][x].type_;
 				Transform boxTrans = transform_;
 				boxTrans.position_.x = x - 7;
 				boxTrans.position_.z = z - 7;
@@ -165,23 +165,23 @@ void Stage::Release()
 
 BLOCKTYPE Stage::GetBlockType(int _x, int _y)
 {
-	return table_[_x][_y].type_;
+	return table_[_y][_x].type_;
 }
 
 int Stage::GetBlockHeight(int _x, int _y)
 {
-	return table_[_x][_y].height_;
+	return table_[_y][_x].height_;
 }
 
 void Stage::SetBlockType(int _x, int _y, BLOCKTYPE _type)
 {
 	if (_x < XSIZE && _y < ZSIZE && _type < BLOCKTYPE::NUM && _type >= BLOCKTYPE::DEFAULT)
-		table_[_x][_y].type_ = _type;
+		table_[_y][_x].type_ = _type;
 }
 void Stage::SetBlockHeight(int _x, int _y, int _height)
 {
 	if (_x < XSIZE && _y < ZSIZE && _height < YLIMIT && _height >= 0)
-		table_[_x][_y].height_ = _height;
+		table_[_y][_x].height_ = _height;
 }
 void Stage::SaveStage()
 {
@@ -220,8 +220,8 @@ void Stage::SaveStage()
 		for (int w = 0; w < XSIZE; w++)
 		{
 			//writeStr += std::to_string(table_[w][h].type_) + " " + std::to_string(table_[w][h].height_);
-			int t = table_[w][h].type_;
-			writeStr << t << " " << table_[w][h].height_ << ",";
+			int t = table_[h][w].type_;
+			writeStr << t << " " << table_[h][w].height_ << ",";
 		}
 		writeStr << "\n";
 	}
@@ -314,12 +314,12 @@ void Stage::LoadStage()
 }
 void Stage::InitStage()
 {
-	for (int i = 0; i < ZSIZE; i++)
+	for (int z = 0; z < ZSIZE; z++)
 	{
-		for (int j = 0; j < XSIZE; j++)
+		for (int x = 0; x < XSIZE; x++)
 		{
-			SetBlockHeight(j, i, 0);
-			SetBlockType(j, i, DEFAULT);
+			SetBlockHeight(x, z, 0);
+			SetBlockType(x, z, DEFAULT);
 		}
 	}
 }
